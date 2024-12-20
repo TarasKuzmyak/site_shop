@@ -1,19 +1,39 @@
 .header {
-    color: #fccc3e;
-    text-align: center;
+     display: flex;
+    align-items: center; /* Вирівнюємо по вертикалі */
+    justify-content: center; /* Центруємо текст у заголовку */
+    position: relative; /* Для використання абсолютного позиціонування кнопки */
     background-color: #464952;
-    font-family: 'Poppins', sans-serif;
-    border-radius: 8px;
-    
+    padding: 15px;
+}
+header a {
+    text-decoration: none;
+    color: #fccc3e;
+}
+
+#menu-button {
+    position: absolute; /* Абсолютне позиціонування */
+    left: 15px; /* Відступ від лівого краю */
+    top: 50%; /* Вирівнюємо по центру контейнера */
+    transform: translateY(-50%); /* Центруємо по вертикалі */
+    background-color: #54575f;
+    color: #fccc3e;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 header h1 {
+    
     margin: 0;
     font-size: 70px;
 }
-body {
+main {
     background-color: #54575f;
     }
+    
 nav ul {
     list-style-type: none;
     padding: 0;
@@ -61,3 +81,169 @@ nav a:hover {
     flex-direction: column; /* Розташовуємо зображення вертикально */
     gap: 10px; /* Додаємо відступ між зображеннями */
 }
+
+/* Футер */
+footer {
+    background-color: #464952;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #fccc3e;
+}
+
+/* Спливаюче вікно */
+#popup-menu {
+    position: fixed;
+    top: 25%;
+    left: 9%;
+    transform: translate(-50%, -50%);
+    background-color: #54575f;
+    border: 2px solid #fccc3e;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 300px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+#popup-menu  ul button {
+    display: block;
+    background-color: #fccc3e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 0;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    width: 100%; /* Кнопка займає всю ширину */
+}
+
+#popup-menu ul button:hover {
+    background-color: #d4ac34;
+}
+
+#close-menu {
+    background-color: #fccc3e;
+    margin-top: 20px;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    width: 100%
+    
+}
+
+#close-menu:hover {
+    background-color: #d4ac34;
+}
+
+
+
+/* Ховати вікно за замовчуванням */
+.hidden {
+    display: none;
+}
+
+#popup-menu ul {
+    list-style: none;
+    padding: 0;
+    
+}
+
+#popup-menu ul li {
+    margin: 10px 0;
+}
+
+#popup-menu ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+}
+
+
+
+.products {
+    display: flex;
+    flex-wrap: wrap; /* Дозволяє переносити картки на наступний ряд */
+    gap: 20px; /* Відстань між картками */
+    justify-content: center; /* Центруємо картки на сторінці */
+    padding: 20px;
+}
+
+/* Картка товару */
+.product-card {
+    background-color: #54575f;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 500px; /* Ширина кожної картки */
+    height: 500px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px); /* Піднімає картку */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Більший ефект тіні */
+}
+
+/* Зображення товару */
+.product-image {
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+/* Заголовок товару */
+.product-title {
+    
+    font-size: 18px;
+    
+    margin: 10px 0;
+    color:#fccc3e
+}
+
+/* Ціна товару */
+.product-price {
+    font-size: 16px;
+    color: #fccc3e;
+    margin: 10px 0;
+}
+
+/* Список характеристик */
+.product-specs {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+    text-align: left;
+    color:white
+}
+
+/* Кнопка "Купити" */
+.buy-button {
+    background-color: #fccc3e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.buy-button:hover {
+    background-color: #d4ac34;
+}
+
