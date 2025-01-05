@@ -1,15 +1,19 @@
-.header {
-     display: flex;
-    align-items: center; /* Вирівнюємо по вертикалі */
-    justify-content: center; /* Центруємо текст у заголовку */
-    position: relative; /* Для використання абсолютного позиціонування кнопки */
+body {
+    background-color: #54575f;
+    }
+    
+header {
     background-color: #464952;
     padding: 15px;
-}
+    position: relative; /* Для використання абсолютного позиціонування кнопки */
+    }
+
 header a {
+    color: #d4ac34;
     text-decoration: none;
-    color: #fccc3e;
 }
+
+
 
 #menu-button {
     position: absolute; /* Абсолютне позиціонування */
@@ -23,35 +27,6 @@ header a {
     font-size: 16px;
     cursor: pointer;
     border-radius: 5px;
-}
-
-header h1 {
-    
-    margin: 0;
-    font-size: 70px;
-}
-main {
-    background-color: #54575f;
-    }
-    
-nav ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    font-size: 20px;
-}
-
-nav a:hover {
-    color: #fccc3e;
 }
 
 .img-description {
@@ -175,8 +150,6 @@ footer a:hover {
 
 
 .products {
-    display: flex;
-    flex-wrap: wrap; /* Дозволяє переносити картки на наступний ряд */
     gap: 20px; /* Відстань між картками */
     justify-content: center; /* Центруємо картки на сторінці */
     padding: 20px;
@@ -187,7 +160,6 @@ footer a:hover {
     background-color: #54575f;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 500px; /* Ширина кожної картки */
     height: 500px;
     padding: 20px;
     text-align: center;
@@ -196,7 +168,7 @@ footer a:hover {
 
 .product-card:hover {
     transform: translateY(-5px); /* Піднімає картку */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Більший ефект тіні */
+    box-shadow: 0 6px 12px #fccc3e; /* Більший ефект тіні */
 }
 
 /* Зображення товару */
@@ -247,3 +219,28 @@ footer a:hover {
     background-color: #d4ac34;
 }
 
+.carousel-inner img {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.product-specs {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+
+
+.keyboards-hov  {
+    display: block; /* Забезпечує, що зображення поводиться як блоковий елемент */
+    margin: 0 auto; /* Центрує зображення, якщо це потрібно */
+    transition: transform 0.3s ease; /* Додає плавний перехід */
+    margin-top: 100px; /* Відступ зверху */
+    width: 80%; /* Зменшує ширину зображення до 80% від контейнера */
+    height: auto; /* Зберігає пропорції зображення */
+}
+
+.keyboards-hov:hover {
+    transform: scale(1.2); /* Збільшує зображення */
+}
