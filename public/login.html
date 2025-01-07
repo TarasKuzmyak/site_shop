@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>login</title>
+</head>
+
+<body>
+
+    <!-- Хедер -->
+    <header>
+        <button id="menu-button">Меню</button>
+        <button id="login-button"><a href="login.html">login</a></button>
+        <h1 class="text-center"><a href="index.html">Click&Type</a></h1>
+
+
+    </header>
+    <form action="/login" method="POST">
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Адреса електронної пошти</label>
+            <input type="email"  class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">Ми ніколи нікому не передамо вашу електронну адресу.</div>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Пароль</label>
+            <input type="password"  class="form-control" id="exampleInputPassword1">
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">Запам'ятати мене</label>
+        </div>
+        <button type="submit" class="btn submit">Відправити</button>
+    </form>
+    <footer>
+        <p>&copy; 2024 Click&Type. Усі права захищено.</p>
+        <p>Зв'язатися з нами: <a href="mailto:info@pizza.com">clicktype@gmail.com</a></p>
+        <p>Наші соцмережі: <a href="https://facebook.com">Facebook</a> | <a href="https://instagram.com">Instagram</a>
+        </p>
+    </footer>
+    <script src="server.js"></script>
+    
+</body>
+
+</html>

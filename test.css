@@ -1,9 +1,0 @@
-.keyboards-hov {
-    margin: 200px; /* Відступ зовні, замість padding */
-    transition: transform 0.3s ease; /* Додаємо плавний перехід */
-
-}
-
-.keyboards-hov:hover{
-    transform: scale(1.2); /* Збільшуємо зображення на 20% */
-}
