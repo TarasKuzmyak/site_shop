@@ -119,46 +119,40 @@ footer a:hover {
 
 /* Картка товару */
 .product-card {
+    position: relative;
+    padding-bottom: 50px; /* Додаємо внутрішній відступ, щоб кнопка не заходила на текст */
     margin-top: 25px;
     background-color: #54575f;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    height: 430px;
+    height: 430px; /* Стандартна висота */
     padding: 20px;
     text-align: center;
     transition: transform 0.3s, box-shadow 0.3s;
 }
-.mouse-product-card {
-    margin-top: 25px;
-    background-color: #54575f;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+/* Якщо картка миші — змінюємо висоту */
+.product-card.mouse {
     height: 530px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
+}
+.product-card.headsets {
+    height: 450px;
 }
 
+/* Ховер-ефект для всіх карток */
 .product-card:hover {
-    transform: translateY(-5px); /* Піднімає картку */
-    box-shadow: 0 6px 12px #fccc3e; /* Більший ефект тіні */
-}
-
-.mouse-product-card:hover {
-    transform: translateY(-5px); /* Піднімає картку */
-    box-shadow: 0 6px 12px #fccc3e; /* Більший ефект тіні */
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px #fccc3e;
 }
 
 /* Зображення товару */
 .product-image {
     width: 100%;
-    border-radius: 5px;
     margin-bottom: 15px;
 }
 
 .mouse-product-image {
     width: 40%;
-    border-radius: 5px;
     margin-bottom: 15px;
 }
 
@@ -185,10 +179,15 @@ footer a:hover {
     margin: 10px 0;
     text-align: left;
     color:white
+    
 }
 
 /* Кнопка "Купити" */
 .buy-button {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* Центруємо кнопку */
     background-color: #fccc3e;
     color: white;
     border: none;
@@ -197,6 +196,7 @@ footer a:hover {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    
 }
 
 .buy-button:hover {
