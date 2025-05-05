@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Click&Type-Keyboard</title>
+
+    {% load static %}
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+
+  <body>
+    <!-- Хедер -->
+    <header>
+      <button id="menu-button">Меню</button>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="text-center"><a href="index.html">Click&Type</a></h1>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div
+        id="popup-menu"
+        class="hidden d-flex flex-column justify-content-between"
+      >
+        <ul class="list-unstyled mb-3">
+          <li class="mb-2">
+            <a href="keyboard.html" class="btn w-100">Клавіатури</a>
+          </li>
+          <li class="mb-2"><a href="mouse.html" class="btn w-100">Мишки</a></li>
+          <li><a href="headsets.html" class="btn w-100">Гарнітури</a></li>
+        </ul>
+        <button id="close-menu" class="btn w-100">Закрити</button>
+      </div>
+
+      <section>
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-4 col-md-6 col-sm-12">
+              <div class="product-card headsets">
+                <img
+                  src="{% static 'css/img/headsets/Logitech G435.png' %}"
+                  alt="Клавіатура"
+                  class="mouse-product-image"
+                />
+                <h3 class="product-title">Logitech G435</h3>
+                <p class="product-price">Ціна: 2600грн</p>
+                <ul class="product-specs">
+                  <li>Тип: Механічна</li>
+                  <li>Підсвітка: Одноколірна</li>
+                  <li>Підключення: Бездротове</li>
+                </ul>
+                <a href="main_product/main_headsets/Logitech G435.html"
+                  ><button class="buy-button">Купити</button></a
+                >
+              </div>
+            </div>
+            <div class="col-xl-4 col-md-6 col-sm-12">
+              <div class="product-card headsets">
+                <img
+                  src="{% static 'css/img/headsets/VGN VXE V1.png' %}"
+                  alt="Клавіатура"
+                  class="mouse-product-image"
+                />
+                <h3 class="product-title">VGN VXE V1</h3>
+                <p class="product-price">Ціна: 1400 грн</p>
+                <ul class="product-specs">
+                  <li>Тип: Механічна</li>
+                  <li>Підсвітка: RGB</li>
+                  <li>Підключення: Бездротове</li>
+                </ul>
+                <a href="main_product/main_headsets/VGN VXE V1.html"
+                  ><button class="buy-button">Купити</button></a
+                >
+              </div>
+            </div>
+            <div class="col-xl-4 col-md-6 col-sm-12">
+              <div class="product-card headsets">
+                <img
+                  src="{% static 'css/img/headsets/Aula S6.png' %}"
+                  alt="Клавіатура"
+                  class="mouse-product-image"
+                />
+                <h3 class="product-title">Aula S6</h3>
+                <p class="product-price">Ціна: 1200 грн</p>
+                <ul class="product-specs">
+                  <li>Тип: Механічна</li>
+                  <li>Підсвітка: Одноколірна</li>
+                  <li>Підключення: Дротове</li>
+                </ul>
+                <a href="main_product/main_headsets/Aula S6.html"
+                  ><button class="buy-button">Купити</button></a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2024 Click&Type. Усі права захищено.</p>
+      <p>
+        Зв'язатися з нами:
+        <a href="mailto:info@pizza.com">clicktype@gmail.com</a>
+      </p>
+      <p>
+        Наші соцмережі: <a href="https://facebook.com">Facebook</a> |
+        <a href="https://instagram.com">Instagram</a>
+      </p>
+    </footer>
+    <script src="{% static 'js/script.js' %}"></script>
+  </body>
+</html>
