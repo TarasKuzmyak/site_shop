@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кошик</title>
+    <link rel="shortcup icon" href="css/img/logo kolo.png">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <button id="menu-button">Меню</button>
+        <button id="login-button"><a href="login.html">Sign Up</a></button>
+        <h1 class="text-center"><a href="index.html">Click&Type</a></h1>
+
+
+    </header>
+    
+
+    <div id="popup-menu" class="hidden d-flex flex-column justify-content-between">
+        <ul class="list-unstyled mb-3">
+            <li class="mb-2"><a href="keyboard.html" class="btn  w-100">Клавіатури</a></li>
+            <li class="mb-2"><a href="mouse.html" class="btn w-100">Мишки</a></li>
+            <li><a href="headsets.html" class="btn w-100">Гарнітури</a></li>
+        </ul>
+        <button id="close-menu" class="btn w-100">Закрити</button>
+    </div>
+    <div class="line"></div>
+    <div class="container my-5">
+        <h1 class="text-center mb-4" style="color: #fff;"><strong>Кошик</strong></h1>
+        <div class="table-responsive">
+            <table class="table table-borderless align-middle">
+                <thead>
+                    <tr>
+                        <th>Зображення</th>
+                        <th>Назва товару</th>
+                        <th>Кількість</th>
+                        <th>Ціна</th>
+                        <th>Всього</th>
+                        <th>Дія</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Зображення"><img src="css\img\keyboards\AJAZZ  AK 820 PRO.jpg" alt="Клавіатура" width="100"></td>
+                        <td data-label="Назва товару">Механічна клавіатура RGB</td>
+                        <td data-label="Кількість">
+                            <div class="quantity-wrapper">
+                                <button class="btn btn-outline-secondary" onclick="decreaseQuantity(this)">−</button>
+                                <input type="number" value="1" class="form-control quantity-input" min="1">
+                                <button class="btn btn-outline-secondary" onclick="increaseQuantity(this)">+</button>
+                            </div>
+                        </td>
+                        <td data-label="Ціна" cl>1 500₴</td>
+                        <td data-label="Всього">1 500₴</td>
+                        <td data-label="Дія"><button class="btn btn-secondary">Видалити</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end mt-4">
+            <h4 style="color: #fff;">Загальна сума: <strong style="color: #d4ac34;">1 500₴</strong></h4>
+            <button class="btn btn-secondary mt-2">Оформити замовлення</button>
+        </div>
+    </div>
+    <div class="line"></div>
+
+
+    <footer>
+        <p>&copy; 2024 Click&Type. Усі права захищено.</p>
+        <p>Зв'язатися з нами: <a href="mailto:info@pizza.com">clicktype@gmail.com</a></p>
+        <p>Наші соцмережі: <a href="https://facebook.com">Facebook</a> | <a href="https://instagram.com">Instagram</a>
+        </p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

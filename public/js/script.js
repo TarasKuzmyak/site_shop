@@ -13,3 +13,15 @@ closeMenu.addEventListener('click', () => {
     popupMenu.classList.add('hidden');
 });
 
+// + and -
+function increaseQuantity(button) {
+    let input = button.previousElementSibling; // Отримати поле вводу
+    input.value = parseInt(input.value) + 1; // Збільшити значення
+}
+
+function decreaseQuantity(button) {
+    let input = button.nextElementSibling; // Отримати поле вводу
+    if (parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1; // Зменшити значення, якщо більше 1
+    }
+}

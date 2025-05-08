@@ -7,7 +7,9 @@ body {
     margin: 0;
     padding: 0;
     }
-    
+
+
+/* Хедер */
 header {
     
     background-color: #464952;
@@ -22,22 +24,7 @@ header a {
 }
 
 
-
-#menu-button {
-    position: absolute; /* Абсолютне позиціонування */
-    left: 15px; /* Відступ від лівого краю */
-    top: 50%; /* Вирівнюємо по центру контейнера */
-    transform: translateY(-50%); /* Центруємо по вертикалі */
-    background-color: #54575f;
-    color: #fccc3e;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-
+/* Кнопка Login */
 #login-button {
     position: absolute; /* Абсолютне позиціонування */
     right: 15px; /* Відступ від лівого краю */
@@ -51,7 +38,6 @@ header a {
     cursor: pointer;
     border-radius: 5px;
 }
-
 
 
 /* Футер */
@@ -70,6 +56,22 @@ footer a {
 
 footer a:hover {
     color: #fccc3e;
+}
+
+
+/* Кнопка меню */
+#menu-button {
+    position: absolute; /* Абсолютне позиціонування */
+    left: 15px; /* Відступ від лівого краю */
+    top: 50%; /* Вирівнюємо по центру контейнера */
+    transform: translateY(-50%); /* Центруємо по вертикалі */
+    background-color: #54575f;
+    color: #fccc3e;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 /* Спливаюче вікно */
@@ -114,9 +116,6 @@ footer a:hover {
 }
 
 
-
-
-
 /* Картка товару */
 .product-card {
     position: relative;
@@ -135,6 +134,7 @@ footer a:hover {
 .product-card.mouse {
     height: 530px;
 }
+/* Якщо картка навушників — змінюємо висоту */
 .product-card.headsets {
     height: 450px;
 }
@@ -151,6 +151,7 @@ footer a:hover {
     margin-bottom: 15px;
 }
 
+/* Зображення миші */
 .mouse-product-image {
     width: 40%;
     margin-bottom: 15px;
@@ -158,9 +159,7 @@ footer a:hover {
 
 /* Заголовок товару */
 .product-title {
-    
     font-size: 18px;
-    
     margin: 10px 0;
     color:#fccc3e
 }
@@ -179,7 +178,6 @@ footer a:hover {
     margin: 10px 0;
     text-align: left;
     color:white
-    
 }
 
 /* Кнопка "Купити" */
@@ -203,19 +201,10 @@ footer a:hover {
     background-color: #d4ac34;
 }
 
-.carousel-inner img {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-
-.product-specs {
-    list-style-type: disc;
-    padding-left: 20px;
-}
 
 
 
+/* Клавіатури на головній сторінці */
 .keyboards-hov  {
     display: block; /* Забезпечує, що зображення поводиться як блоковий елемент */
     margin: 0 auto; /* Центрує зображення, якщо це потрібно */
@@ -228,6 +217,7 @@ footer a:hover {
 .keyboards-hov:hover {
     transform: scale(1.2); /* Збільшує зображення */
 }
+ /* Лінія на головній */
  .line {
     
     height: 5px;
@@ -235,6 +225,7 @@ footer a:hover {
     background-color: #d4ac34;
     margin: 50px auto 50px;
  }
+  /* Текст про нас */
  .compani {
     width: 100%;
     background-color: #464952;
@@ -243,39 +234,6 @@ footer a:hover {
     color: white;
     max-width: 400px; /* Максимальна ширина тексту */
     margin: 0 auto; /* Центрування тексту в межах колонки */
- }
-
- form {
-    position: relative;
-    margin: 50px;
-    width: 30%;
- }
- 
- .form-label {
-    color: #fccc3e;
-    background-color: #464952;
-    width: 100%;
-    border-radius: 5px;
-    padding: 5px;
- }
-
- .form-text {
-    color: white;
- }
- .submit {
-    background-color: #fccc3e;
- }
- 
- .submit:hover{
-    background-color: #d4ac34;
- }
-
- .form-control:focus, .form-check-input:focus {
-    background-color: #464952;
- }
- 
- .form-control, .form-check-input  {
-    background-color: #464952;
  }
 
  @media (max-width: 768px) {
@@ -289,7 +247,7 @@ footer a:hover {
     }
 }
 
-
+/* Кнопка купити на строрніці товару */
 .main-buy-button {
     display: block;
     padding: 10px 20px;
@@ -299,10 +257,63 @@ footer a:hover {
     border-radius: 5px;
     cursor: pointer;
 }
+
 .main-buy-button:hover {
     background: #fccc3e;
 }
 
+/* Колір назви на сторніці товару*/
 .title-color {
     color: #d4ac34;
 }
+
+/* Всяка дич по таблиці*/
+.table td, th {
+    background-color: #464952 !important; /* Світло-сірий фон */  
+    padding: 15px !important; /* Відступи всередині кожної комірки */ 
+    color: #fff; 
+   
+}
+.table {
+    border-radius: 10px; /* Задає заокруглені кути */
+    overflow: hidden; /* Забезпечує коректне відображення внутрішніх елементів */
+    padding: 50px; /* Відступи всередині кожної комірки */
+   
+}
+.table th {
+    color: #d4ac34;
+}
+
+/* Вирівнює кнопки та input по центру */
+.quantity-wrapper {
+    display: flex;
+    align-items: center; 
+    gap: 5px; /* Додає відступи між кнопками */
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    font-size: 16px;
+    height: 30px; 
+}
+
+.btn-outline-secondary {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    padding: 0;
+    text-align: center;
+    color: #fff;
+    border-color:#fff ;
+}
+
+/* Забирає стрілочики */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+
