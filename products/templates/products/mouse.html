@@ -1,27 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
   <head>
+    {% load static %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Click&Type-Keyboard</title>
-
-    {% load static %}
+    <title>Click&Type</title>
+    <link rel="shortcut icon" href="{% static 'img/logo kolo.png' %}" />
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
-
   <body>
     <!-- Хедер -->
     <header>
       <button id="menu-button">Меню</button>
+      <button id="login-button"><a href="{% url 'login' %}">Sign Up</a></button>
 
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <h1 class="text-center"><a href="index.html">Click&Type</a></h1>
-          </div>
-        </div>
-      </div>
+      <h1 class="text-center"><a href="{% url 'index' %}">Click&Type</a></h1>
     </header>
 
     <main>
@@ -31,10 +25,14 @@
       >
         <ul class="list-unstyled mb-3">
           <li class="mb-2">
-            <a href="keyboard.html" class="btn w-100">Клавіатури</a>
+            <a href="{% url 'keyboard' %}" class="btn w-100">Клавіатури</a>
           </li>
-          <li class="mb-2"><a href="mouse.html" class="btn w-100">Мишки</a></li>
-          <li><a href="headsets.html" class="btn w-100">Гарнітури</a></li>
+          <li class="mb-2">
+            <a href="{% url 'mouse' %}" class="btn w-100">Мишки</a>
+          </li>
+          <li>
+            <a href="{% url 'headsets' %}" class="btn w-100">Гарнітури</a>
+          </li>
         </ul>
         <button id="close-menu" class="btn w-100">Закрити</button>
       </div>
@@ -42,45 +40,22 @@
       <section>
         <div class="container">
           <div class="row">
-            <!-- Example product block -->
-            <div class="col-xl-4 col-md-6 col-sm-12">
-              <div class="product-card mouse">
-                <img
-                  src="{% static 'css/img/mouse/Attack Shark x3.png' %}"
-                  alt="Клавіатура"
-                  class="mouse-product-image"
-                />
-                <h3 class="product-title">Attack Shark x3</h3>
-                <p class="product-price">Ціна: 1600 грн</p>
-                <ul class="product-specs">
-                  <li>Підсвітка: RGB</li>
-                  <li>Підключення: Бездротове</li>
-                </ul>
-                <a href="main_product/main_mouse/Attack Shark x3.html"
-                  ><button class="buy-button">Купити</button></a
-                >
+            {% for mouse in mice %}
+              <div class="col-xl-4 col-md-6 col-sm-12">
+                <div class="product-card mouse">
+                  <img src="{% static mouse.image_url %}" alt="{{ mouse.name }}" class="product-image mouse-product-image" />
+                  <h3 class="product-title">{{ mouse.name }}</h3>
+                  <p class="product-price">Ціна: {{ mouse.price }} грн</p>
+                  <ul class="product-specs">
+                    <li>Підсвітка: {{ mouse.backlight }}</li>
+                    <li>Підключення: {{ mouse.connection }}</li>
+                  </ul>
+                  <a href="{% url 'product_detail' mouse.id %}">
+                    <button class="buy-button">Купити</button>
+                  </a>
+                </div>
               </div>
-            </div>
-            <!-- You can replicate the product block for other items -->
-            <div class="col-xl-4 col-md-6 col-sm-12">
-              <div class="product-card mouse">
-                <img
-                  src="{% static 'css/img/mouse/Ajazz AJ159 APEX.png' %}"
-                  alt="Клавіатура"
-                  class="mouse-product-image"
-                />
-                <h3 class="product-title">Ajazz AJ159 APEX</h3>
-                <p class="product-price">Ціна: 2800 грн</p>
-                <ul class="product-specs">
-                  <li>Підсвітка: RGB</li>
-                  <li>Підключення: Бездротове</li>
-                </ul>
-                <a href="main_product/main_mouse/Ajazz AJ159 APEX.html"
-                  ><button class="buy-button">Купити</button></a
-                >
-              </div>
-            </div>
-            <!-- Repeat for other products -->
+            {% endfor %}
           </div>
         </div>
       </section>
@@ -88,14 +63,8 @@
 
     <footer>
       <p>&copy; 2024 Click&Type. Усі права захищено.</p>
-      <p>
-        Зв'язатися з нами:
-        <a href="mailto:info@pizza.com">clicktype@gmail.com</a>
-      </p>
-      <p>
-        Наші соцмережі: <a href="https://facebook.com">Facebook</a> |
-        <a href="https://instagram.com">Instagram</a>
-      </p>
+      <p>Зв'язатися з нами: <a href="mailto:clicktype@gmail.com">clicktype@gmail.com</a></p>
+      <p>Наші соцмережі: <a href="https://facebook.com">Facebook</a> | <a href="https://instagram.com">Instagram</a></p>
     </footer>
 
     <script src="{% static 'js/script.js' %}"></script>

@@ -1,15 +1,13 @@
-// Отримуємо елементи
-const menuButton = document.getElementById('menu-button');
-const popupMenu = document.getElementById('popup-menu');
-const closeMenu = document.getElementById('close-menu');
+document.addEventListener("DOMContentLoaded", function () {
+    const menuButton = document.getElementById("menu-button");
+    const closeButton = document.getElementById("close-menu");
+    const popupMenu = document.getElementById("popup-menu");
 
-// Відкриваємо меню
-menuButton.addEventListener('click', () => {
-    popupMenu.classList.remove('hidden');
+    menuButton.addEventListener("click", function () {
+        popupMenu.classList.toggle("hidden");
+    });
+
+    closeButton.addEventListener("click", function () {
+        popupMenu.classList.add("hidden");
+    });
 });
-
-// Закриваємо меню
-closeMenu.addEventListener('click', () => {
-    popupMenu.classList.add('hidden');
-});
-

@@ -1,54 +1,88 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Клавіатура - Продукт</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/styles.css">
+    <title>{{ product.name|default:'Мишка' }} - Click&Type</title>
+    <link rel="shortcut icon" href="{% static 'img/logo_kolo.png' %}">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <!-- Хедер -->
-    <header>
-        <button id="menu-button">Меню</button>
+     <header>
+      <button id="menu-button">Меню</button>
+      <button id="login-button"><a href="{% url 'login' %}">Sign Up</a></button>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 class="text-center"><a href="../../index.html">Click&Type</a></h1>
+      <h1 class="text-center"><a href="{% url 'index' %}">Click&Type</a></h1>
+    </header>
+
+    <main>
+      <div
+        id="popup-menu"
+        class="hidden d-flex flex-column justify-content-between"
+      >
+        <ul class="list-unstyled mb-3">
+          <li class="mb-2">
+            <a href="{% url 'keyboard' %}" class="btn w-100">Клавіатури</a>
+          </li>
+          <li class="mb-2">
+            <a href="{% url 'mouse' %}" class="btn w-100">Мишки</a>
+          </li>
+          <li>
+            <a href="{% url 'headsets' %}" class="btn w-100">Гарнітури</a>
+          </li>
+        </ul>
+        <button id="close-menu" class="btn w-100">Закрити</button>
+      </div>
+        <div class="container mt-5">
+            <div class="row align-items-center g-5">
+                <div class="col-md-6 text-center">
+                    <img src="{% static product.image_url %}"  
+                         alt="{{ product.name }}" class="img-fluid rounded">
+                </div>
+                <div class="col-md-6">
+                    {% if product %}
+                    <h1 class="fw-bold title-color">{{ product.name }}</h1>
+                    <p>Ціна: {{ product.price|default:'Не вказано' }} грн</p>
+                    <p>Вага: {{ product.weight|default:'Не вказано' }} г</p>
+
+                    📦 Комплектація:
+                    {% if product.bundle %}
+                        <ul>
+                        {% for item in product.bundle %}
+                            <li>◻️ {{ item }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Комплектація не вказана.</p>
+                    {% endif %}
+
+                    🎯 Сенсор: {{ product.sensor|default:'Не вказано' }}<br>
+                    🔘 Кількість кнопок: {{ product.buttons|default:'Не вказано' }} програмовані<br>
+                    🚚 Доставка Новою Поштою<br>
+
+                    <a href="{% url 'buy_product' product.id %}">
+                        <button class="btn main-buy-button w-100 mt-3">Купити зараз</button>
+                    </a>
+                    {% else %}
+                    <p class="text-danger fw-bold">Помилка: дані продукту не передано</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </header>
-    <div class="container mt-5">
-        <div class="row align-items-center ">
-            <div class="col-md-6 text-center">
-                <img src="../../css/img/mouse/Ajazz AJ390.png" alt="Клавіатура" class="img-fluid rounded w-50">
-            </div>
-            <div class="col-md-6">
-                <h1 class="fw-bold title-color">Ajazz AJ390</h1>
-                <p class=""> Ціна: 1100 грн <br>
-                     Вага: 49 г<br>
-                    📦 Комплектація:<br>
-                    
-                        ◻️Мишка<br>
-                        ◻️Кабель<br>
-                        ◻️USB-приймач<br>
-                        ◻️Інструкція<br>
-                    
-                        Сенсор: PixArt 3395<br>
-                        Кількість кнопок: 5 програмовані<br>
-                    
-                    Доставка Новою Поштою 🚚</p>
-                <button class="btn main-buy-button w-100 mt-3">Купити зараз</button>
-            </div>
-        </div>
-    </div>
+    </main>
+
     <footer>
         <p>&copy; 2024 Click&Type. Усі права захищено.</p>
-        <p>Зв'язатися з нами: <a href="mailto:info@pizza.com">clicktype@gmail.com</a></p>
-        <p>Наші соцмережі: <a href="https://facebook.com">Facebook</a> | <a href="https://instagram.com">Instagram</a>
+        <p>Зв'язатися з нами: <a href="mailto:clicktype@gmail.com">clicktype@gmail.com</a></p>
+        <p>Наші соцмережі: 
+            <a href="https://facebook.com">Facebook</a> | 
+            <a href="https://instagram.com">Instagram</a>
         </p>
     </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

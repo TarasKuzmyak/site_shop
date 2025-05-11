@@ -8,7 +8,6 @@
     <link rel="shortcut icon" href="{% static 'img/logo kolo.png' %}" />
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-    <script src="{% static 'js/script.js' %}"></script>
   </head>
   <body>
     <!-- Хедер -->
@@ -16,7 +15,7 @@
       <button id="menu-button">Меню</button>
       <button id="login-button"><a href="{% url 'login' %}">Sign Up</a></button>
 
-      <h1 class="text-center"><a href="index.html">Click&Type</a></h1>
+      <h1 class="text-center"><a href="{% url 'index' %}">Click&Type</a></h1>
     </header>
 
     <main>
@@ -111,5 +110,6 @@
         <a href="https://instagram.com">Instagram</a>
       </p>
     </footer>
+    <script src="{% static 'js/script.js' %}"></script>
   </body>
 </html>

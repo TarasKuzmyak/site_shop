@@ -1,54 +1,67 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Клавіатура - Продукт</title>
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/styles.css">
+    <title>{{ product.name }} - Продукт</title>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <!-- Хедер -->
     <header>
         <button id="menu-button">Меню</button>
-
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="text-center"><a href="../../index.html">Click&Type</a></h1>
+                    <h1 class="text-center"><a href="{% url 'index' %}">Click&Type</a></h1>
                 </div>
             </div>
         </div>
     </header>
+
     <div class="container mt-5">
-        <div class="row align-items-center ">
+        <div class="row align-items-center">
             <div class="col-md-6 text-center">
-                <img src="../../css/img/headsets/Logitech G435.png" alt="Клавіатура" class="img-fluid rounded w-50">
+                <img src="{{ product.image_url.url }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-width: 300px; height: auto;">
             </div>
             <div class="col-md-6">
-                <h1 class="fw-bold title-color">Logitech G435</h1>
-                <p class=""> Ціна: 2600 грн <br>
-                     Вага: 175 г<br>
+                <h1 class="fw-bold title-color">{{ product.name }}</h1>
+                <p>
+                    Ціна: {{ product.price }} грн <br>
+                    Вага: {{ product.size }} г<br>
                     📦 Комплектація:<br>
-                    
-                        ◻️Навушники<br>
-                        ◻️Кабель<br>
-                        ◻️USB-приймач<br>
-                        ◻️Інструкція<br>
-                    час роботи: 22 год<br>
-                    Підключення: Bluetooth, радіоканал, USB Type-C<br>
-                        
-                    
-                    Доставка Новою Поштою 🚚</p>
+                    <ul>
+                        {% for item in product.bundle %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    Час роботи: {{ product.battery_life }} год<br>
+                    Підключення: {{ product.connection }}<br>
+                    🚚 Доставка Новою Поштою
+                </p>
                 <button class="btn main-buy-button w-100 mt-3">Купити зараз</button>
             </div>
         </div>
     </div>
+
     <footer>
         <p>&copy; 2024 Click&Type. Усі права захищено.</p>
-        <p>Зв'язатися з нами: <a href="mailto:info@pizza.com">clicktype@gmail.com</a></p>
-        <p>Наші соцмережі: <a href="https://facebook.com">Facebook</a> | <a href="https://instagram.com">Instagram</a>
-        </p>
+        <p>Зв'язатися з нами: <a href="mailto:clicktype@gmail.com">clicktype@gmail.com</a></p>
+        <p>Наші соцмережі: <a href="https://facebook.com">Facebook</a> | <a href="https://instagram.com">Instagram</a></p>
     </footer>
 </body>
 </html>
+from products.models import Product
+
+# Отримуємо товар, наприклад, Logitech G435
+product = Product.objects.get(name="Logitech G435")
+
+# Оновлюємо комплектацію (можна додати будь-які комплектуючі)
+product.components = "Навушники, Кабель, USB-приймач, Інструкція"
+
+# Зберігаємо зміни
+product.save()
+
+print("✔️ Комплектація оновлена для", product.name)

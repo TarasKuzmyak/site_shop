@@ -225,6 +225,14 @@ footer a:hover {
   background-color: #d4ac34;
 }
 
+.mouse-product-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
 .carousel-inner img {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

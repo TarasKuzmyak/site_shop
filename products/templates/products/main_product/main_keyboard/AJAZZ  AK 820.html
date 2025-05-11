@@ -15,7 +15,7 @@
       <button id="menu-button">Меню</button>
       <button id="login-button"><a href="{% url 'login' %}">Sign Up</a></button>
 
-      <h1 class="text-center"><a href="index.html">Click&Type</a></h1>
+      <h1 class="text-center"><a href="{% url 'index' %}">Click&Type</a></h1>
     </header>
 
     <main>
@@ -34,41 +34,39 @@
 
       </div>
 
-    <div class="container mt-5">
-      <div class="row align-items-center g-5">
-        <div class="col-md-6 text-center">
-          <img
-            src="{% static 'img/keyboards/AJAZZ  AK 820.jpg' %}"
-            alt="Клавіатура"
-            class="img-fluid rounded"
-          />
-        </div>
-        <div class="col-md-6">
-          {% if product %}
-          <h1 class="fw-bold title-color">{{ product.name }}</h1>
-          <p>Ціна: {{ product.price }} грн</p>
-          <p>Розмір: {{ product.size|default:'Не вказано' }}%</p>
-          📦 Комплектація:
-          {% if product.bundle %}
-              {% for item in product.bundle %}
-                  ◻️ {{ item }}<br />
-              {% endfor %}
-          {% else %}
-              <p>Комплектація не вказана.</p>
-          {% endif %}
-          🔴 {{ product.switches|default:'Невідомо' }} свічі<br />
-          Роллер для регулювання звуку<br />
-          Доставка Новою Поштою 🚚
+     <main>
+        <div class="container mt-5">
+            <div class="row align-items-center g-5">
+                <div class="col-md-6 text-center">
+                    <img src="{% static product.image_url %}" alt="{{ product.name }}" class="img-fluid rounded">
+                </div>
+                <div class="col-md-6">
+                    <h1 class="fw-bold title-color">{{ product.name }}</h1>
+                    <p>{{ product.description }}</p>
+                    <p>Ціна: {{ product.price }} грн</p>
+                    <p>Розмір: {{ product.size|default:'Не вказано' }}%</p>
 
-          <a href="{% url 'buy_product' product.id %}">
-            <button class="btn main-buy-button w-100 mt-3">Купити зараз</button>
-          </a>
-          {% else %}
-          <p class="text-danger fw-bold">Помилка: дані продукту не передано</p>
-          {% endif %}
+                    📦 Комплектація:
+                    {% if product.bundle %}
+                        {% for item in product.bundle %}
+                            ◻️ {{ item }}<br />
+                        {% endfor %}
+                    {% else %}
+                        <p>Комплектація не вказана.</p>
+                    {% endif %}
+                    
+                    🔴 {{ product.switches|default:'Невідомо' }} свічі<br />
+                    Підсвітка: {{ product.backlight|default:'Не вказано' }}<br />
+                    Підключення: {{ product.connection|default:'Не вказано' }}<br />
+                    🚚 Доставка Новою Поштою
+
+                    <a href="{% url 'buy_product' product.id %}">
+                        <button class="btn main-buy-button w-100 mt-3">Купити зараз</button>
+                    </a>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </main>
 
     <footer>
       <p>&copy; 2024 Click&Type. Усі права захищено.</p>
@@ -81,30 +79,6 @@
         <a href="https://instagram.com">Instagram</a>
       </p>
     </footer>
-  <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const menuButton = document.getElementById("menu-button");
-    const menuPopup = document.getElementById("popup-menu");
-    const closeMenu = document.getElementById("close-menu");
-
-    // Приховати меню при завантаженні
-    menuPopup.style.display = "none";
-
-    menuButton.addEventListener("click", function () {
-        if (menuPopup.style.display === "none") {
-            menuPopup.style.display = "block"; // Відкрити меню
-            console.log("Меню відкрито.");
-        } else {
-            menuPopup.style.display = "none"; // Закрити меню
-            console.log("Меню приховано.");
-        }
-    });
-
-    closeMenu.addEventListener("click", function () {
-        menuPopup.style.display = "none";
-        console.log("Меню закрито.");
-    });
-});
-</script>
+    <script src="{% static 'js/script.js' %}"></script>
   </body>
 </html>

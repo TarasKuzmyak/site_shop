@@ -1,23 +1,30 @@
 document.addEventListener("DOMContentLoaded", function () {
     const menuButton = document.getElementById("menu-button");
-    const menuPopup = document.getElementById("popup-menu");
-    const closeMenu = document.getElementById("close-menu");
-
-    // Приховати меню на старті
-    menuPopup.style.display = "none";
+    const closeButton = document.getElementById("close-menu");
+    const popupMenu = document.getElementById("popup-menu");
 
     menuButton.addEventListener("click", function () {
-        if (menuPopup.style.display === "none") {
-            menuPopup.style.display = "block"; // Відкрити меню
-            console.log("Меню відкрито.");
-        } else {
-            menuPopup.style.display = "none"; // Закрити меню
-            console.log("Меню приховано.");
-        }
+        popupMenu.classList.toggle("hidden");
     });
 
-    closeMenu.addEventListener("click", function () {
-        menuPopup.style.display = "none"; // Закриття меню
-        console.log("Меню закрито.");
+    closeButton.addEventListener("click", function () {
+        popupMenu.classList.add("hidden");
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const tabs = document.querySelectorAll(".nav-link");
+    const content = document.querySelectorAll(".tab-pane");
+
+    tabs.forEach(tab => {
+        tab.addEventListener("click", function (event) {
+            event.preventDefault();
+            tabs.forEach(t => t.classList.remove("active"));
+            this.classList.add("active");
+
+            const target = this.id.replace("-tab", "");
+            content.forEach(c => c.classList.remove("show", "active"));
+            document.getElementById(target).classList.add("show", "active");
+        });
     });
 });
