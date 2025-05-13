@@ -28,3 +28,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("openRegisterModal").addEventListener("click", function () {
+            var loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+            var registerModal = new bootstrap.Modal(document.getElementById("registerModal"));
+
+            loginModal.hide(); // Закриваємо модальне вікно входу
+            registerModal.show(); // Відкриваємо модальне вікно реєстрації
+        });
+});
+</script>

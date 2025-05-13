@@ -7,9 +7,10 @@ from .forms import RegistrationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from .models import Order
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
+
+
 
 
 
@@ -39,36 +40,26 @@ def keyboard(request):
 def mouse(request):
     mice = Product.objects.filter(category="mouse")
     return render(request, 'products/mouse.html', {'mice': mice})
-
-
 def login_view(request):
     if request.method == "POST":
-        print("Форма логіна відправлена!")  # 🔥 Перевіряємо, чи код взагалі запускається
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "")
 
-        email = request.POST["email"]
-        password = request.POST["password"]
+        user = None  # 🔹 Додаємо початкове значення, щоб уникнути UnboundLocalError
 
         try:
             user = User.objects.get(email=email)
-            print("Знайдено користувача:", user)  # 🔥 Перевіряємо, чи користувач існує
-            user = authenticate(request, username=user.username, password=password)  
-            print("Автентифікований користувач:", user)  # 🔥 Чи спрацював логін
+            user = authenticate(request, username=user.username, password=password)
         except User.DoesNotExist:
-            print("Користувача НЕ знайдено!")
-            user = None
+            return JsonResponse({"success": False, "errors": {"email": "Користувача з таким email не знайдено!"}})
 
         if user is not None:
             login(request, user)
-            print("Логін успішний, перенаправлення!")
-            return redirect("/profile/")  # 🔹 Перенаправлення після логіна
-
+            return JsonResponse({"success": True, "redirect_url": f"/profile/{user.username}/"})
         else:
-            print("Неправильний email або пароль!")
-            return render(request, "products/login.html", {"error": "Неправильний email або пароль"})
+            return JsonResponse({"success": False, "errors": {"password": "Неправильний пароль!"}})
 
-    return render(request, "products/login.html")
-
-
+    return JsonResponse({"success": False, "errors": {"general": "Невірний запит!"}})
 
 
 
@@ -77,16 +68,28 @@ def registration(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)  # Автовхід після реєстрації
-            return redirect("index")  # Перенаправлення на головну сторінку
+            user = form.save(commit=False)
+            user.username = form.cleaned_data["email"].strip()  # 🔹 Забираємо зайві пробіли/символи
+            user.set_password(form.cleaned_data["password"])
+            user.save()
+            login(request, user)  
+            return redirect("profile", username=user.username)
     else:
         form = RegistrationForm()
-    return render(request, "registration.html", {"form": form})
 
-def profile(request):
-    return render(request, "products/profile.html")
+    return render(request, "products/registration.html", {"form": form})
 
+
+
+
+def profile(request, username):
+    user = get_object_or_404(User, username=username)  # 🔹 Надійний спосіб отримати користувача
+    return render(request, "products/profile.html", {"user": user})
+
+
+
+
+    
 
 @login_required
 def orders(request):

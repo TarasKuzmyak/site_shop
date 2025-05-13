@@ -9,11 +9,10 @@ urlpatterns = [
     path('mouse/', views.mouse, name='mouse'),
     path('headsets/', views.headsets, name='headsets'),
     path('login/', views.login_view, name='login'),
-    path('registration/', views.registration, name='registration'),
+    path("registration/", views.registration, name="registration"),
+    path("profile/<str:username>/", views.profile, name="profile"),
     path('/login/mouse/headsets.html', views.headsets, name='headsets'),
     path('order/<int:order_id>/', views.order_detail, name='order_detail'),
-    
-    path('profile/', views.profile, name='profile'),
 
     # Маршрути для продуктів
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),

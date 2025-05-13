@@ -354,3 +354,57 @@ form {
 .title-color {
   color: #d4ac34;
 }
+
+.modal-content {
+  background: #464952;
+  color: white;
+  border-radius: 12px;
+  border: 2px solid #d4ac34;
+  text-align: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-header h5 {
+  color: #fccc3e;
+}
+
+.form-control {
+  background: #54575f;
+  color: white;
+  border: 1px solid #d4ac34;
+  border-radius: 8px;
+}
+
+.btn {
+  background: #d4ac34;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  display: block;
+  margin: 0 auto;
+}
+
+.btn:hover {
+  background: #fccc3e;
+  display: block;
+  margin: 0 auto;
+}
+
+.modal-body form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-dialog {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+  /* Центруємо */
+}

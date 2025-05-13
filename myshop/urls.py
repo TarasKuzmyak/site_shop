@@ -12,11 +12,9 @@ urlpatterns = [
 
     # 🔹 Автентифікація
     path("login/", views.login_view, name="login"),
-    path('registration/', views.registration, name='registration'),
+    path("registration/", views.registration, name="registration"),
+    path("profile/<str:username>/", views.profile, name="profile"),
     path('logout/', LogoutView.as_view(next_page='index'), name='logout'),
-
-    # 🔹 Профіль користувача
-    path("profile/", views.profile, name="profile"),
 
 
 

@@ -22,14 +22,14 @@
 
     <!-- Форма входу -->
     <main class="container mt-5">
-        <div class="card p-4 shadow-sm mx-auto" style="max-width: 400px;">
-            <h2 class="text-center mb-4">Вхід</h2>
+        <div class="card p-4 shadow-sm mx-auto" style="max-width: 400px; background: #2c3e50; color: #fff;">
+            <h2 class="text-center mb-4" style="color: #f39c12;">Вхід</h2>
             <form action="{% url 'login' %}" method="POST">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="email" class="form-label">Електронна пошта</label>
                     <input type="email" class="form-control" name="email" id="email" required>
-                    <div id="emailHelp" class="form-text">Ми ніколи нікому не передамо вашу електронну адресу.</div>
+                    <div id="emailHelp" class="form-text" style="color: #ecf0f1;">Ми ніколи нікому не передамо вашу електронну адресу.</div>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Пароль</label>
@@ -42,7 +42,7 @@
                     </div>
                     <a href="{% url 'password_reset' %}" class="text-muted">Забули пароль?</a>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 mt-3">Увійти</button>
+                <button type="submit" class="btn btn-primary w-100 mt-3" style="background: #f39c12; border: none;">Увійти</button>
             </form>
         </div>
     </main>
