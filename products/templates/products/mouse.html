@@ -1,72 +1,40 @@
-<!DOCTYPE html>
-<html lang="uk">
-  <head>
-    {% load static %}
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Click&Type</title>
-    <link rel="shortcut icon" href="{% static 'img/logo kolo.png' %}" />
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-  </head>
-  <body>
-    <!-- Хедер -->
-    <header>
-      <button id="menu-button">Меню</button>
-      <button id="login-button"><a href="{% url 'login' %}">Sign Up</a></button>
+{% extends "base.html" %}
+{% load static %}
 
-      <h1 class="text-center"><a href="{% url 'index' %}">Click&Type</a></h1>
-    </header>
+{% block title %}Мишки - Click&Type{% endblock %}
 
-    <main>
-      <div
-        id="popup-menu"
-        class="hidden d-flex flex-column justify-content-between"
-      >
-        <ul class="list-unstyled mb-3">
-          <li class="mb-2">
-            <a href="{% url 'keyboard' %}" class="btn w-100">Клавіатури</a>
-          </li>
-          <li class="mb-2">
-            <a href="{% url 'mouse' %}" class="btn w-100">Мишки</a>
-          </li>
-          <li>
-            <a href="{% url 'headsets' %}" class="btn w-100">Гарнітури</a>
-          </li>
-        </ul>
-        <button id="close-menu" class="btn w-100">Закрити</button>
-      </div>
-
-      <section>
-        <div class="container">
-          <div class="row">
+{% block content %}
+<section>
+    <div class="container mt-5">
+        <h2 class="text-center title-color">Наші мишки</h2>
+        <div class="row">
             {% for mouse in mice %}
-              <div class="col-xl-4 col-md-6 col-sm-12">
-                <div class="product-card mouse">
-                  <img src="{% static mouse.image_url %}" alt="{{ mouse.name }}" class="product-image mouse-product-image" />
-                  <h3 class="product-title">{{ mouse.name }}</h3>
-                  <p class="product-price">Ціна: {{ mouse.price }} грн</p>
-                  <ul class="product-specs">
-                    <li>Підсвітка: {{ mouse.backlight }}</li>
-                    <li>Підключення: {{ mouse.connection }}</li>
-                  </ul>
-                  <a href="{% url 'product_detail' mouse.id %}">
-                    <button class="buy-button">Купити</button>
-                  </a>
+            <div class="col-xl-4 col-md-6 col-sm-12 d-flex justify-content-center">
+                <div class="product-card">
+                    <div class="product-image-wrapper">
+                        <img src="{% static mouse.image_url %}" alt="{{ mouse.name }}" class="mouse-product-image">
+                    </div>
+                    <h3 class="product-title">{{ mouse.name }}</h3>
+                    <p class="product-price">Ціна: {{ mouse.price }} грн</p>
+                    <ul class="product-specs">
+                        <li>Підсвітка: {{ mouse.backlight }}</li>
+                        <li>Підключення: {{ mouse.connection }}</li>
+                    </ul>
+                    <div class="button-container">
+                        <!-- Додана кнопка "Додати в кошик" -->
+                    <button class="add-to-cart btn btn-success"
+                    data-id="{{ mouse.id }}" data-name="{{ mouse.name }}" data-price="{{ mouse.price }}">
+                    Додати в кошик
+                </button>
+                    <a href="{% url 'product_detail' mouse.id %}">
+                        <button class="buy-button">Купити</button>
+                    </a>
                 </div>
-              </div>
+
+                </div>
+            </div>
             {% endfor %}
-          </div>
         </div>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Click&Type. Усі права захищено.</p>
-      <p>Зв'язатися з нами: <a href="mailto:clicktype@gmail.com">clicktype@gmail.com</a></p>
-      <p>Наші соцмережі: <a href="https://facebook.com">Facebook</a> | <a href="https://instagram.com">Instagram</a></p>
-    </footer>
-
-    <script src="{% static 'js/script.js' %}"></script>
-  </body>
-</html>
+    </div>
+</section>
+{% endblock %}

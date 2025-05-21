@@ -9,6 +9,14 @@ from django.contrib.auth import update_session_auth_hash
 from .models import Order
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
+from django.contrib.auth import logout
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
+
+
 
 
 
@@ -40,44 +48,65 @@ def keyboard(request):
 def mouse(request):
     mice = Product.objects.filter(category="mouse")
     return render(request, 'products/mouse.html', {'mice': mice})
+
 def login_view(request):
     if request.method == "POST":
         email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "")
-
-        user = None  # 🔹 Додаємо початкове значення, щоб уникнути UnboundLocalError
 
         try:
             user = User.objects.get(email=email)
             user = authenticate(request, username=user.username, password=password)
         except User.DoesNotExist:
             return JsonResponse({"success": False, "errors": {"email": "Користувача з таким email не знайдено!"}})
-
+        
         if user is not None:
             login(request, user)
-            return JsonResponse({"success": True, "redirect_url": f"/profile/{user.username}/"})
+            return JsonResponse({"success": True, "redirect_url": f"/profile/{user.username}/"})  # 🔹 Перенаправлення
         else:
             return JsonResponse({"success": False, "errors": {"password": "Неправильний пароль!"}})
-
+    
     return JsonResponse({"success": False, "errors": {"general": "Невірний запит!"}})
 
 
-
-
+@csrf_exempt
 def registration(request):
     if request.method == "POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = form.cleaned_data["email"].strip()  # 🔹 Забираємо зайві пробіли/символи
-            user.set_password(form.cleaned_data["password"])
-            user.save()
-            login(request, user)  
-            return redirect("profile", username=user.username)
-    else:
-        form = RegistrationForm()
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "")
+        confirm_password = request.POST.get("confirm_password", "")
 
-    return render(request, "products/registration.html", {"form": form})
+        errors = {}
+
+        if not first_name:
+            errors["first_name"] = "Поле 'Ім'я' не може бути порожнім!"
+        if not last_name:
+            errors["last_name"] = "Поле 'Прізвище' не може бути порожнім!"
+        if not email:
+            errors["email"] = "Введіть email!"
+        elif User.objects.filter(email=email).exists():
+            errors["email"] = "Користувач з таким email вже існує!"
+
+        if len(password) < 6:
+            errors["password"] = "Пароль має бути не менше 6 символів!"
+        if password != confirm_password:
+            errors["confirm_password"] = "Паролі не співпадають!"
+
+        if errors:
+            return JsonResponse({"success": False, "errors": errors})
+
+        user = User.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            username=email,
+            password=make_password(password),
+        )
+        return JsonResponse({"success": True, "redirect_url": "/profile/" + user.username + "/"})
+
+    return JsonResponse({"success": False, "errors": {"general": "Невірний запит!"}})
 
 
 
@@ -158,22 +187,60 @@ def ajazz_ak820_view(request):
     return render(request, 'products/main_product/main_keyboard/AJAZZ  AK 820.html', {'product': product})
 
 
-@login_required
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    cart_item, created = Cart.objects.get_or_create(user=request.user, product=product)
-    
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Product, CartItem
+from django.contrib.sessions.models import Session
 
-    return redirect('cart')
 
-@login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Product, CartItem
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import Product, CartItem
+
+# 🔹 Тимчасово вимкни CSRF, якщо проблема в токені
+from django.http import JsonResponse
+import json
+
+def add_to_cart(request):
+    if request.method == "POST":
+        try:
+            print("✅ Запит отримано:", request.body)  # 🔹 Додаємо лог
+            data = json.loads(request.body)
+            product_id = data.get("id")
+
+            if not product_id:
+                return JsonResponse({"success": False, "error": "ID товару не передано!"}, status=400)
+
+            if request.user.is_authenticated:
+                product = Product.objects.get(id=product_id)
+                Cart.objects.create(user=request.user, product=product)
+                return JsonResponse({"success": True, "message": "Товар додано у кошик!"})
+
+            return JsonResponse({"success": True, "message": "Товар додано у локальний кошик!"})
+
+        except Product.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Товар не знайдено!"}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "Помилка JSON!"}, status=400)
+
+    return JsonResponse({"success": False, "error": "Метод не підтримується!"}, status=405)
+
+
+
+
+
+
 def cart_view(request):
-    cart_items = Cart.objects.filter(user=request.user)
-    total_price = sum(item.total_price() for item in cart_items)
-    return render(request, 'cart.html', {'cart_items': cart_items, 'total_price': total_price})
+    return render(request, "cart.html")
+
+
 
 @login_required
 def remove_from_cart(request, item_id):
@@ -189,4 +256,35 @@ def buy_product_view(request, product_id):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'products/main_product/main_keyboard/AJAZZ  AK 820.html', {'product': product})
+
+def logout_view(request):
+    logout(request)  # 🔹 Завершуємо сесію користувача
+    return redirect("index")  # 🔹 Перенаправляємо на головну сторінку
+
+from django.http import JsonResponse
+from .models import CartItem
+
+def cart_data(request):
+    if request.user.is_authenticated:
+        cart_items = CartItem.objects.filter(user=request.user)
+        data = {
+            "cart_items": [
+                {
+                    "id": item.id,
+                    "name": item.product.name,
+                    "image": item.product.image.url,
+                    "quantity": item.quantity,
+                    "total_price": item.total_price(),
+                }
+                for item in cart_items
+            ]
+        }
+    else:
+        data = {"cart_items": []}
+    
+    return JsonResponse(data)
+
+
+def check_auth_status(request):
+    return JsonResponse({"is_authenticated": request.user.is_authenticated})
 

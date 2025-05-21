@@ -43,6 +43,10 @@ urlpatterns = [
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('buy/<int:product_id>/', views.buy_product_view, name='buy_product'),
+    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+
+
+
 
     # 🔹 Підключення додаткових маршрутів
     path('', include('products.urls')),  # Важливо: має бути останнім

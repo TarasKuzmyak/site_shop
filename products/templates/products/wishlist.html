@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кошик</title>
+    <link rel="shortcut icon" href="{% static 'img/logo_kolo.png' %}">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+</head>
+<body>
+    <!-- Хедер -->
+    <header class="d-flex justify-content-between align-items-center p-3 bg-light">
+        <button id="menu-button" class="btn btn-outline-primary">Меню</button>
+        <h1 class="text-center flex-grow-1">
+            <a href="{% url 'index' %}" class="text-decoration-none text-dark">Click&Type</a>
+        </h1>
+        {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn btn-danger">Вийти</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary">Вхід</a>
+        {% endif %}
+    </header>
+
+    <!-- Меню -->
+    <div id="popup-menu" class="hidden position-fixed top-0 start-0 w-100 h-100 bg-light p-4 d-flex flex-column align-items-center">
+        <ul class="list-unstyled w-50">
+            <li><a href="{% url 'keyboard' %}" class="btn btn-outline-dark w-100">Клавіатури</a></li>
+            <li><a href="{% url 'mouse' %}" class="btn btn-outline-dark w-100">Мишки</a></li>
+            <li><a href="{% url 'headsets' %}" class="btn btn-outline-dark w-100">Гарнітури</a></li>
+        </ul>
+        <button id="close-menu" class="btn btn-danger w-25">Закрити</button>
+    </div>
+
+    <!-- Кошик -->
+    <main class="container mt-5">
+        <h2 class="text-center mb-4 text-dark"><strong>Кошик</strong></h2>
+        {% if cart_items %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Зображення</th>
+                            <th>Назва товару</th>
+                            <th>Кількість</th>
+                            <th>Ціна</th>
+                            <th>Всього</th>
+                            <th>Дія</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded" width="100"></td>
+                            <td>{{ item.product.name }}</td>
+                            <td>
+                                <div class="quantity-wrapper">
+                                    <button class="btn btn-outline-secondary" onclick="decreaseQuantity(this)">−</button>
+                                    <input type="number" value="{{ item.quantity }}" class="form-control quantity-input" min="1">
+                                    <button class="btn btn-outline-secondary" onclick="increaseQuantity(this)">+</button>
+                                </div>
+                            </td>
+                            <td>{{ item.product.price }}₴</td>
+                            <td><strong>{{ item.total_price }}₴</strong></td>
+                            <td>
+                                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Видалити</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-end mt-4">
+                <h4 class="text-dark">Загальна сума: <strong class="text-warning">{{ cart_total }}₴</strong></h4>
+                <a href="{% url 'checkout' %}" class="btn btn-success mt-2">Оформити замовлення</a>
+            </div>
+        {% else %}
+            <p class="text-center text-muted">Кошик поки що порожній 😔</p>
+        {% endif %}
+    </main>
+
+    <footer class="text-center mt-5 py-3 bg-light">
+        <p>&copy; 2024 Click&Type. Усі права захищено.</p>
+        <p>Зв'язатися з нами: <a href="mailto:clicktype@gmail.com">clicktype@gmail.com</a></p>
+        <p>Наші соцмережі: 
+            <a href="https://facebook.com">Facebook</a> | 
+            <a href="https://instagram.com">Instagram</a>
+        </p>
+    </footer>
+
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

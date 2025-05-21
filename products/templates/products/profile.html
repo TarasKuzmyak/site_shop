@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Профіль - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <!-- Бічне меню -->
+        <aside class="col-md-3">
+            <ul class="list-group shadow-sm" style="background-color: #2c2f33; border-radius: 12px;">
+                <li class="list-group-item bg-warning text-dark fw-bold text-center border-0">Профіль</li>
+                <li class="list-group-item bg-transparent"><a href="{% url 'orders' %}" class="text-decoration-none text-light fw-medium">Мої замовлення</a></li>
+                <li class="list-group-item bg-transparent"><a href="{% url 'wishlist' %}" class="text-decoration-none text-light fw-medium">Список бажаного</a></li>
+                <li class="list-group-item bg-transparent"><a href="{% url 'logout' %}" class="text-danger fw-bold text-decoration-none">Вихід</a></li>
+            </ul>
+        </aside>
+
+        <section class="col-md-8">
+            <div class="card p-4 shadow-lg border-0 text-center" style="background-color: #23272a; color: #ffffff; border-radius: 12px;">
+                <h2 class="mb-3 text-warning fw-bold">Ваш профіль</h2>
+
+                <!-- Жовта смуга -->
+                <div class="mb-4" style="height: 4px; background-color: #fccc3e; width: 60%; margin: 0 auto; border-radius: 2px;"></div>
+
+                <!-- Ім'я користувача -->
+                <h3 class="fw-semibold">{{ user.first_name }} {{ user.last_name }}</h3>
+                <p class="text-muted fw-light">@{{ user.username }}</p>
+
+                <form method="POST" class="mx-auto" style="max-width: 500px;">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label fw-bold text-warning">Ім'я</label>
+                        <input type="text" class="form-control text-center" name="first_name" id="first_name" value="{{ user.first_name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label fw-bold text-warning">Прізвище</label>
+                        <input type="text" class="form-control text-center" name="last_name" id="last_name" value="{{ user.last_name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold text-warning">Електронна пошта</label>
+                        <input type="email" class="form-control text-center bg-dark text-light border-0" name="email" id="email" value="{{ user.email }}" readonly>
+                    </div>
+                    <button type="submit" class="btn w-100 mt-3" style="background: #fccc3e; color: #23272a; font-weight: bold;">Зберегти зміни</button>
+                </form>
+
+                <div class="mt-3">
+                    <a href="{% url 'change_password' %}" class="btn btn-outline-warning w-100 fw-bold">Змінити пароль</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

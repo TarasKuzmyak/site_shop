@@ -108,3 +108,14 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Замовлення №{self.id} ({self.get_status_display()})"
+
+class CartItem(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)  # 🔹 Дозволяємо Null
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    session_key = models.CharField(max_length=32, null=True, blank=True)  # 🔹 Для сесійного кошика
+    def total_price(self):
+        return self.product.price * self.quantity
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} ({self.quantity})"

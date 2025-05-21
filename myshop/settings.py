@@ -89,6 +89,11 @@ DATABASES = {
         'PASSWORD': 'myshop_pass',
         'HOST': 'localhost',
         'PORT': '3306',
+        'TEST': {
+            'NAME': 'test_myshop_db',
+        },
+
+
     }
 }
 

@@ -1,26 +1,50 @@
-<!DOCTYPE html>
-<html lang="uk">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ваш кошик</title>
-  </head>
-  <body>
-    <h1>Ваш кошик</h1>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Кошик - Click&Type{% endblock %}
+
+{% block content %}
+<section class="container my-5">
+    <h1 class="text-center mb-4 text-white"><strong>Кошик</strong></h1>
     {% if cart_items %}
-    <ul>
-      {% for item in cart_items %}
-      <li>
-        {{ item.product.name }} - {{ item.quantity }} шт. - {{ item.total_price
-        }} грн
-        <a href="{% url 'remove_from_cart' item.id %}">Видалити</a>
-      </li>
-      {% endfor %}
-    </ul>
-    <p>Загальна сума: {{ total_price }} грн</p>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Зображення</th>
+                        <th>Назва товару</th>
+                        <th>Кількість</th>
+                        <th>Ціна</th>
+                        <th>Всього</th>
+                        <th>Дія</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                    <tr>
+                        <td><img src="{{ item.product.image_url.url }}" alt="{{ item.product.name }}" width="100"></td>
+                        <td>{{ item.product.name }}</td>
+                        <td>
+                            <div class="quantity-wrapper">
+                                <button class="btn btn-outline-secondary">−</button>
+                                <input type="number" value="{{ item.quantity }}" class="form-control quantity-input" min="1">
+                                <button class="btn btn-outline-secondary">+</button>
+                            </div>
+                        </td>
+                        <td>{{ item.product.price }}₴</td>
+                        <td>{{ item.total_price }}₴</td>
+                        <td><button class="btn btn-danger">Видалити</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="text-end mt-4">
+            <h4 class="text-white">Загальна сума: <strong class="text-warning">{{ total_price }}₴</strong></h4>
+            <button class="btn btn-success mt-2">Оформити замовлення</button>
+        </div>
     {% else %}
-    <p>Кошик порожній.</p>
+        <p class="text-center text-light">Кошик порожній</p>
     {% endif %}
-    <a href="{% url 'home' %}">Продовжити покупки</a>
-  </body>
-</html>
+</section>
+{% endblock %}

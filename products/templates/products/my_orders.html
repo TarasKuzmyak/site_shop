@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Мої замовлення - Click&Type{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="fw-bold title-color">Мої замовлення</h1>
+
+    {% if orders %}
+        <div class="row g-4">
+            {% for order in orders %}
+            <div class="col-md-6">
+                <div class="order-card p-3 rounded shadow-sm">
+                    <h5 class="fw-bold">Замовлення #{{ order.id }}</h5>
+                    <p><strong>Дата:</strong> {{ order.date }}</p>
+                    <p><strong>Статус:</strong> 
+                        <span class="badge {% if order.status == 'Відправлено' %} bg-success {% else %} bg-warning {% endif %}">
+                            {{ order.status }}
+                        </span>
+                    </p>
+                    <p><strong>Сума:</strong> {{ order.total_price }} грн</p>
+
+                    <a href="{% url 'order_detail' order.id %}" class="btn btn-primary w-100">Переглянути деталі</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-danger fw-bold">У вас поки немає замовлень.</p>
+    {% endif %}
+</div>
+{% endblock %}
