@@ -3,59 +3,252 @@
 
 {% block title %}Головна - Click&Type{% endblock %}
 
-
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center title-color">Ласкаво просимо в Click&Type!</h2>
-    <p class="text-center">Знайди свою ідеальну клавіатуру прямо зараз!</p>
-
-    
-    <div class="row">
-    <div class="col-xl-6 col-md-6 col-sm-12">
-        <img src="{% static 'img/головна 1.png' %}" alt="Клавіатура" class="keyboards-hov">
-    </div>
-    <div class="col-xl-6 col-md-6 col-sm-12">
-        <img src="{% static 'img/головна 2.png' %}" alt="Клавіатура" class="keyboards-hov">
-    </div>
-</div> <!-- Закриваємо рядок -->
-
-    <div class="line"></div>
-
-    <div class="row">
-        <div class="col-xl-6 col-md-6 col-sm-12">
-            <video controls width="100%" height="100%">
-                <source src="{% static 'img/bniohlv.mp4' %}" type="video/mp4">
-                Ваш браузер не підтримує відео.
-            </video>
-        </div>
-        <div class="col-xl-6 col-md-6 col-sm-12">
-            <video controls width="100%" height="100%">
-                <source src="{% static 'img/Untitled.mp4' %}" type="video/mp4">
-                Ваш браузер не підтримує відео.
-            </video>
+<!-- Герой секція -->
+<section class="hero-section mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Найкращі девайси для вашої продуктивності</h1>
+                <p class="lead mb-4">Механічні клавіатури, точні миші та якісні гарнітури для професіоналів та геймерів</p>
+                <a href="{% url 'keyboard' %}" class="btn btn-warning btn-lg me-2">Купити зараз</a>
+                <a href="#featured" class="btn btn-outline-light btn-lg">Дізнатись більше</a>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'img/keyboards/AJAZZ AK820 Pro MOA.jpg' %}" alt="Механічна клавіатура" class="img-fluid rounded-3 shadow-lg">
+            </div>
         </div>
     </div>
+</section>
 
-    <div class="line"></div>
-
-    <div class="row g-3">
-        <div class="col-xl-6 col-md-6 col-sm-12">
-            <p class="compani">
-                Наша компанія спеціалізується на продажу якісних комп’ютерних девайсів, 
-                зокрема механічних клавіатур, які відкривають новий рівень комфорту та 
-                задоволення від використання. Ми пишаємося тим, що пропонуємо товари, яких 
-                немає на українському ринку, забезпечуючи наших клієнтів унікальними можливостями.
-            </p>
-        </div>
-        <div class="col-xl-6 col-md-6 col-sm-12">
-            <p class="compani">
-                Основний акцент ми робимо на швидкому обслуговуванні, тому ваше замовлення буде 
-                оформлено оперативно та без зайвих турбот. Ми орієнтуємось на геймерів, які 
-                цінують якість та функціональність. Наша місія – показати всім, що механічні 
-                клавіатури – це не просто тренд, а must-have для кожного, хто проводить багато часу 
-                за комп'ютером.
-            </p>
+<!-- Категорії -->
+<section class="categories-section mb-5" id="featured">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title">Наші категорії</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="category-card h-100">
+                    <a href="{% url 'keyboard' %}">
+                        <img src="{% static 'img/news/podsvetka_klaviaturi_real_el_gaming_8710_tkl_backlit_nochiyu(22).jpg' %}" alt="Клавіатури" class="img-fluid rounded-top">
+                        <div class="category-info p-4">
+                            <h3 class="text-center">Клавіатури</h3>
+                            <p class="text-center text-muted">Від механічних до мембранних - знайдіть ідеальну для себе</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="category-card h-100">
+                    <a href="{% url 'mouse' %}">
+                        <img src="{% static 'img/category-mouse.jpg' %}" alt="Мишки" class="img-fluid rounded-top">
+                        <div class="category-info p-4">
+                            <h3 class="text-center">Мишки</h3>
+                            <p class="text-center text-muted">Висока точність та ергономіка для комфортної роботи</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="category-card h-100">
+                    <a href="{% url 'headsets' %}">
+                        <img src="{% static 'img/category-headset.jpg' %}" alt="Гарнітури" class="img-fluid rounded-top">
+                        <div class="category-info p-4">
+                            <h3 class="text-center">Гарнітури</h3>
+                            <p class="text-center text-muted">Чистий звук та комфорт для тривалого використання</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Популярні товари -->
+<section class="popular-products mb-5">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title">Популярні товари</h2>
+        <div class="row g-4">
+            {% for product in popular_products %}
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card h-100">
+                    <div class="product-badge bg-danger">Популярний</div>
+                    <img src="{% static product.image_url %}" alt="{{ product.name }}" class="img-fluid">
+                    <div class="product-info p-3">
+                        <h3>{{ product.name }}</h3>
+                        <div class="product-price mb-2">
+                            <span class="current-price">{{ product.price }}₴</span>
+                            {% if product.old_price %}
+                            <span class="old-price">{{ product.old_price }}₴</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-rating mb-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star-half-alt text-warning"></i>
+                            <span class="ms-1">({{ product.reviews }})</span>
+                        </div>
+                        <button class="add-to-cart btn btn-warning w-100" 
+                                data-id="{{ product.id }}" 
+                                data-name="{{ product.name }}" 
+                                data-price="{{ product.price }}">
+                            <i class="fas fa-cart-plus me-2"></i>Додати в кошик
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Переваги -->
+<section class="advantages-section mb-5 py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title">Чому обирають нас</h2>
+        <div class="row g-4">
+            <div class="col-md-3 text-center">
+                <div class="advantage-icon mb-3">
+                    <i class="fas fa-truck fa-3x text-warning"></i>
+                </div>
+                <h4>Швидка доставка</h4>
+                <p>Доставка по всій Україні за 1-3 дні</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="advantage-icon mb-3">
+                    <i class="fas fa-shield-alt fa-3x text-warning"></i>
+                </div>
+                <h4>Гарантія якості</h4>
+                <p>Офіційна гарантія на всі товари</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="advantage-icon mb-3">
+                    <i class="fas fa-headset fa-3x text-warning"></i>
+                </div>
+                <h4>Підтримка 24/7</h4>
+                <p>Наші фахівці завжди на зв'язку</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="advantage-icon mb-3">
+                    <i class="fas fa-undo fa-3x text-warning"></i>
+                </div>
+                <h4>Легкий повернення</h4>
+                <p>14 днів на тестування товару</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Відгуки -->
+<section class="reviews-section mb-5">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title">Відгуки наших клієнтів</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="review-card p-4 h-100">
+                    <div class="review-header mb-3">
+                        <img src="{% static 'img/people/f78088988a69f351.jpg' %}" alt="Користувач" class="review-avatar">
+                        <div class="review-user">
+                            <h5>Андріан</h5>
+                            <div class="review-rating">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"Купив механічну клавіатуру - якість на вищому рівні! Доставка швидка, обслуговування приємне. Рекомендую!"</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="review-card p-4 h-100">
+                    <div class="review-header mb-3">
+                        <img src="{% static 'img/people/330px-Anna_Zatonskih.jpg' %}" alt="Користувач" class="review-avatar">
+                        <div class="review-user">
+                            <h5>Ганна</h5>
+                            <div class="review-rating">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"Гарнітура звучить чудово, дуже зручна. Ціна приємно вразила. Обов'язково куплю ще щось у цьому магазині."</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="review-card p-4 h-100">
+                    <div class="review-header mb-3">
+                        <img src="{% static 'img/people/2020-06-11-13.36.28-1.jpg' %}" alt="Користувач" class="review-avatar">
+                        <div class="review-user">
+                            <h5>Максим</h5>
+                            <div class="review-rating">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="review-text">"Миша просто бомба! Точність на висоті, дизайн стильний. Вже порадив друзям ваш магазин."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Блог -->
+<section class="blog-section mb-5">
+    <div class="container">
+        <h2 class="text-center mb-5 section-title">Останні статті</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="blog-card h-100">
+                    <img src="{% static 'img/news/01.jpg' %}" alt="Стаття" class="img-fluid rounded-top">
+                    <div class="blog-content p-3">
+                        <div class="blog-meta mb-2">
+                            <span class="text-muted"><i class="far fa-calendar me-1"></i>15 травня 2025</span>
+                        </div>
+                        <h4>Як вибрати ідеальну механічну клавіатуру</h4>
+                        <p class="text-muted">Поради щодо вибору клавіатури за типом перемикачів, розміром та призначенням...</p>
+                        <a href="#" class="btn btn-outline-warning">Читати далі</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="blog-card h-100">
+                    <img src="{% static 'img/news/10-mouses-for-gaming-02.jpg.webp' %}" alt="Стаття" class="img-fluid rounded-top">
+                    <div class="blog-content p-3">
+                        <div class="blog-meta mb-2">
+                            <span class="text-muted"><i class="far fa-calendar me-1"></i>10 травня 2025</span>
+                        </div>
+                        <h4>ТОП-5 геймерських мишок 2025 року</h4>
+                        <p class="text-muted">Огляд найкращих моделей для професійних геймерів та кіберспортсменів...</p>
+                        <a href="#" class="btn btn-outline-warning">Читати далі</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="blog-card h-100">
+                    <img src="{% static 'img/news/news_1622619309184421_0.webp' %}" alt="Стаття" class="img-fluid rounded-top">
+                    <div class="blog-content p-3">
+                        <div class="blog-meta mb-2">
+                            <span class="text-muted"><i class="far fa-calendar me-1"></i>5 травня 2025</span>
+                        </div>
+                        <h4>Бездротові vs Дротові гарнітури</h4>
+                        <p class="text-muted">Плюси та мінуси кожного типу, на що звернути увагу при виборі...</p>
+                        <a href="#" class="btn btn-outline-warning">Читати далі</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

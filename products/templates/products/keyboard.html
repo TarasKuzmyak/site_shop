@@ -3,39 +3,149 @@
 
 {% block title %}Клавіатури - Click&Type{% endblock %}
 
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active" aria-current="page">Клавіатури</li>
+{% endblock %}
+
 {% block content %}
-<section>
-    <div class="container mt-5">
-        <h2 class="text-center title-color">Наші клавіатури</h2>
+<section class="products-section">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h1 class="fw-bold">Клавіатури</h1>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="dropdown d-inline-block me-2">
+                    <button class="btn btn-outline-dark dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown">
+                        Сортувати за
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">За популярністю</a></li>
+                        <li><a class="dropdown-item" href="#">За ціною (зростанням)</a></li>
+                        <li><a class="dropdown-item" href="#">За ціною (спаданням)</a></li>
+                        <li><a class="dropdown-item" href="#">За новизною</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown d-inline-block">
+                    <button class="btn btn-outline-dark dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+                        Фільтри
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="dropdown-header">Тип перемикачів</li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Cherry MX Red</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Cherry MX Blue</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Cherry MX Brown</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-header">Розмір</li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>100% (повнорозмірна)</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>TKL (без цифрового блоку)</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>60%</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li><button class="dropdown-item text-primary">Застосувати фільтри</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             {% for keyboard in keyboards %}
-            <div class="col-xl-4 col-md-6 col-sm-12">
-                <div class="product-card d-flex flex-column">
-                    <img src="{% static keyboard.image_url %}" alt="{{ keyboard.name }}" class="product-image img-fluid">
-                    <h3 class="product-title">{{ keyboard.name }}</h3>
-                    <p class="product-price">Ціна: {{ keyboard.price }} грн</p>
-                    <ul class="product-specs">
-                        <li>Тип: {{ keyboard.type }}</li>
-                        <li>Підсвітка: {{ keyboard.backlight }}</li>
-                        <li>Підключення: {{ keyboard.connection }}</li>
-                    </ul>
-                    <div class="button-container">
-                        <!-- Додаємо CSRF-токен у приховане поле -->
-                        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-
-                        <!-- Кнопка додавання в кошик без <form> -->
-                            <button class="add-to-cart btn btn-success"
-                            data-id="{{ keyboard.id }}" data-name="{{ keyboard.name }}" data-price="{{ keyboard.price }}">
-                            Додати в кошик
-                        </button>
-
-                        <a href="{% url 'product_detail' keyboard.id %}">
-                            <button class="buy-button btn btn-warning">Купити</button>
-                        </a>
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="product-card h-100">
+                    {% if keyboard.is_new %}
+                    <div class="product-badge bg-success">Новинка</div>
+                    {% endif %}
+                    {% if keyboard.discount %}
+                    <div class="product-badge bg-danger">-{{ keyboard.discount }}%</div>
+                    {% endif %}
+                    
+                    <a href="{% url 'product_detail' keyboard.id %}">
+                        <img src="{% static keyboard.image_url %}" alt="{{ keyboard.name }}" class="img-fluid">
+                    </a>
+                    
+                    <div class="product-info p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <a href="{% url 'product_detail' keyboard.id %}" class="text-decoration-none">
+                                <h3 class="product-title mb-0">{{ keyboard.name }}</h3>
+                            </a>
+                            <button class="btn btn-sm btn-outline-secondary wishlist-btn" data-id="{{ keyboard.id }}">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="product-price mb-2">
+                            <span class="current-price">{{ keyboard.price }}₴</span>
+                            {% if keyboard.old_price %}
+                            <span class="old-price">{{ keyboard.old_price }}₴</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-rating mb-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star-half-alt text-warning"></i>
+                            <span class="ms-1">({{ keyboard.reviews }})</span>
+                        </div>
+                        
+                        <ul class="product-specs mb-3">
+                            <li><i class="fas fa-keyboard me-2 text-muted"></i> {{ keyboard.type }}</li>
+                            <li><i class="fas fa-lightbulb me-2 text-muted"></i> {{ keyboard.backlight }}</li>
+                            <li><i class="fas fa-plug me-2 text-muted"></i> {{ keyboard.connection }}</li>
+                        </ul>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="add-to-cart btn btn-warning" 
+                                    data-id="{{ keyboard.id }}" 
+                                    data-name="{{ keyboard.name }}" 
+                                    data-price="{{ keyboard.price }}">
+                                <i class="fas fa-cart-plus me-2"></i>Додати в кошик
+                            </button>
+                            <a href="{% url 'product_detail' keyboard.id %}" class="btn btn-outline-dark">
+                                <i class="fas fa-info-circle me-2"></i>Детальніше
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
+        </div>
+        
+        <!-- Пагінація -->
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Попередня</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Наступна</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+<!-- Додаткові секції -->
+<section class="keyboard-info py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="mb-4">Як вибрати ідеальну клавіатуру?</h2>
+                <p>Механічні клавіатури пропонують неперевершений досвід набору тексту та гри завдяки індивідуальним перемикачам для кожної клавіші.</p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-warning me-2"></i> Виберіть тип перемикачів за вашими уподобаннями</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning me-2"></i> Визначте ідеальний розмір для вашого робочого простору</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning me-2"></i> Оберіть між дротовим та бездротовим підключенням</li>
+                    <li><i class="fas fa-check text-warning me-2"></i> Зверніть увагу на додаткові функції (підсвітка, програмовані клавіші)</li>
+                </ul>
+                <a href="#" class="btn btn-warning mt-3">Дізнатись більше</a>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'img/keyboard-types.jpg' %}" alt="Типи клавіатур" class="img-fluid rounded shadow">
+            </div>
         </div>
     </div>
 </section>

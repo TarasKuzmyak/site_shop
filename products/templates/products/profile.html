@@ -1,52 +1,216 @@
 {% extends "base.html" %}
 {% block title %}Профіль - {{ user.username }}{% endblock %}
 
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active" aria-current="page">Профіль</li>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
+<div class="container mt-4">
+    <div class="row">
         <!-- Бічне меню -->
-        <aside class="col-md-3">
-            <ul class="list-group shadow-sm" style="background-color: #2c2f33; border-radius: 12px;">
-                <li class="list-group-item bg-warning text-dark fw-bold text-center border-0">Профіль</li>
-                <li class="list-group-item bg-transparent"><a href="{% url 'orders' %}" class="text-decoration-none text-light fw-medium">Мої замовлення</a></li>
-                <li class="list-group-item bg-transparent"><a href="{% url 'wishlist' %}" class="text-decoration-none text-light fw-medium">Список бажаного</a></li>
-                <li class="list-group-item bg-transparent"><a href="{% url 'logout' %}" class="text-danger fw-bold text-decoration-none">Вихід</a></li>
-            </ul>
-        </aside>
-
-        <section class="col-md-8">
-            <div class="card p-4 shadow-lg border-0 text-center" style="background-color: #23272a; color: #ffffff; border-radius: 12px;">
-                <h2 class="mb-3 text-warning fw-bold">Ваш профіль</h2>
-
-                <!-- Жовта смуга -->
-                <div class="mb-4" style="height: 4px; background-color: #fccc3e; width: 60%; margin: 0 auto; border-radius: 2px;"></div>
-
-                <!-- Ім'я користувача -->
-                <h3 class="fw-semibold">{{ user.first_name }} {{ user.last_name }}</h3>
-                <p class="text-muted fw-light">@{{ user.username }}</p>
-
-                <form method="POST" class="mx-auto" style="max-width: 500px;">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="first_name" class="form-label fw-bold text-warning">Ім'я</label>
-                        <input type="text" class="form-control text-center" name="first_name" id="first_name" value="{{ user.first_name }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="last_name" class="form-label fw-bold text-warning">Прізвище</label>
-                        <input type="text" class="form-control text-center" name="last_name" id="last_name" value="{{ user.last_name }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label fw-bold text-warning">Електронна пошта</label>
-                        <input type="email" class="form-control text-center bg-dark text-light border-0" name="email" id="email" value="{{ user.email }}" readonly>
-                    </div>
-                    <button type="submit" class="btn w-100 mt-3" style="background: #fccc3e; color: #23272a; font-weight: bold;">Зберегти зміни</button>
-                </form>
-
-                <div class="mt-3">
-                    <a href="{% url 'change_password' %}" class="btn btn-outline-warning w-100 fw-bold">Змінити пароль</a>
+        <div class="col-lg-3 mb-4">
+            <div class="profile-sidebar card shadow-sm border-0">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-user-circle me-2"></i>Мій профіль</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user me-2"></i>Особисті дані
+                    </a>
+                    <a href="{% url 'orders' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-clipboard-list me-2"></i>Мої замовлення
+                    </a>
+                    <a href="{% url 'wishlist' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-heart me-2"></i>Список бажаного
+                    </a>
+                    <a href="{% url 'change_password' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-lock me-2"></i>Змінити пароль
+                    </a>
+                    <form action="{% url 'logout' %}" method="POST" class="list-group-item list-group-item-action">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link text-decoration-none p-0 border-0 bg-transparent text-start w-100">
+                            <i class="fas fa-sign-out-alt me-2"></i>Вийти
+                        </button>
+                    </form>
                 </div>
             </div>
-        </section>
+            
+            <div class="card shadow-sm border-0 mt-3">
+                <div class="card-header bg-dark text-light">
+                    <h6 class="mb-0"><i class="fas fa-trophy me-2"></i>Мій статус</h6>
+                </div>
+                <div class="card-body text-center">
+                    <div class="user-status mb-3">
+                        <i class="fas fa-crown fa-2x text-warning"></i>
+                        <h5 class="mt-2">Стандарт</h5>
+                    </div>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 35%;" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100">35%</div>
+                    </div>
+                    <p class="small text-muted">Витратьте ще 2500₴ для отримання статусу Gold</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Основний контент -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-dark text-light">
+                    <h4 class="mb-0"><i class="fas fa-user-edit me-2"></i>Особисті дані</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" class="row g-3">
+                        {% csrf_token %}
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">Ім'я</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" name="first_name" id="first_name" value="{{ user.first_name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Прізвище</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" name="last_name" id="last_name" value="{{ user.last_name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="email" class="form-label">Електронна пошта</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control bg-light" name="email" id="email" value="{{ user.email }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="phone" class="form-label">Телефон</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-phone"></i></span>
+                                <input type="tel" class="form-control" name="phone" id="phone" value="{{ user.profile.phone|default:'' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="birthday" class="form-label">Дата народження</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-birthday-cake"></i></span>
+                                <input type="date" class="form-control" name="birthday" id="birthday" value="{{ user.profile.birthday|date:'Y-m-d'|default:'' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="gender" class="form-label">Стать</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-venus-mars"></i></span>
+                                <select class="form-select" name="gender" id="gender">
+                                    <option value="">Не вказано</option>
+                                    <option value="M" {% if user.profile.gender == 'M' %}selected{% endif %}>Чоловіча</option>
+                                    <option value="F" {% if user.profile.gender == 'F' %}selected{% endif %}>Жіноча</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-warning fw-bold px-4">
+                                <i class="fas fa-save me-2"></i>Зберегти зміни
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Адреси доставки -->
+            <div class="card shadow-sm border-0 mt-4">
+                <div class="card-header bg-dark text-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Мої адреси</h4>
+                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                            <i class="fas fa-plus me-1"></i>Додати адресу
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for address in user.addresses.all %}
+                        <div class="col-md-6 mb-3">
+                            <div class="address-card p-3 h-100 {% if address.is_default %}border-warning border-2{% else %}border{% endif %}">
+                                <div class="d-flex justify-content-between">
+                                    <h5>{{ address.name }}</h5>
+                                    {% if address.is_default %}
+                                    <span class="badge bg-warning text-dark">За замовчуванням</span>
+                                    {% endif %}
+                                </div>
+                                <p class="mb-1">{{ address.recipient }}</p>
+                                <p class="mb-1">{{ address.phone }}</p>
+                                <p class="mb-1">{{ address.city }}, {{ address.address }}</p>
+                                <p class="mb-2">{{ address.postal_code }}</p>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-dark btn-sm">Редагувати</button>
+                                    {% if not address.is_default %}
+                                    <button class="btn btn-outline-warning btn-sm">Зробити основним</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12 text-center py-4">
+                            <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">У вас немає збережених адрес</h5>
+                            <p class="text-muted">Додайте адресу для швидшого оформлення замовлень</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальне вікно додавання адреси -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-light">
+                <h5 class="modal-title" id="addAddressModalLabel"><i class="fas fa-map-marker-alt me-2"></i>Додати адресу</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addressForm">
+                    <div class="mb-3">
+                        <label for="addressName" class="form-label">Назва адреси (наприклад, Дім, Робота)</label>
+                        <input type="text" class="form-control" id="addressName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient" class="form-label">Отримувач</label>
+                        <input type="text" class="form-control" id="recipient" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Телефон</label>
+                        <input type="tel" class="form-control" id="phone" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="city" class="form-label">Місто</label>
+                            <input type="text" class="form-control" id="city" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="postalCode" class="form-label">Поштовий індекс</label>
+                            <input type="text" class="form-control" id="postalCode">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Адреса</label>
+                        <textarea class="form-control" id="address" rows="2" required></textarea>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="defaultAddress">
+                        <label class="form-check-label" for="defaultAddress">Зробити адресою за замовчуванням</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Скасувати</button>
+                <button type="button" class="btn btn-warning">Зберегти адресу</button>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

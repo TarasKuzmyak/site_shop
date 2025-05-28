@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Оформлення замовлення</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="mb-3">Товари у кошику</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Товар</th>
+                                    <th>Кількість</th>
+                                    <th>Ціна</th>
+                                    <th>Сума</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.product.price }}₴</td>
+                                    <td>{{ item.total_price }}₴</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3">Всього:</th>
+                                    <th>{{ total_price }}₴</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Адреса доставки</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Оберіть адресу доставки</label>
+                            <div class="list-group">
+                                {% for address in addresses %}
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-2" type="radio" name="shipping_address" value="{{ address.id }}" {% if forloop.first %}checked{% endif %}>
+                                    <strong>{{ address.name }}</strong> - {{ address.city }}, {{ address.address }}
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="same_billing" checked>
+                            <label class="form-check-label" for="same_billing">Адреса доставки та оплати однакові</label>
+                        </div>
+                        
+                        <div id="billing_address" style="display: none;">
+                            <div class="mb-3">
+                                <label class="form-label">Оберіть адресу оплати</label>
+                                <div class="list-group">
+                                    {% for address in addresses %}
+                                    <label class="list-group-item">
+                                        <input class="form-check-input me-2" type="radio" name="billing_address" value="{{ address.id }}">
+                                        <strong>{{ address.name }}</strong> - {{ address.city }}, {{ address.address }}
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Спосіб оплати</label>
+                            <div class="list-group">
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-2" type="radio" name="payment_method" value="cash" checked>
+                                    Готівкою при отриманні
+                                </label>
+                                <label class="list-group-item">
+                                    <input class="form-check-input me-2" type="radio" name="payment_method" value="card">
+                                    Оплата карткою онлайн
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Примітка до замовлення</label>
+                            <textarea class="form-control" name="note" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-warning w-100">Підтвердити замовлення</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Підсумок замовлення</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Товари ({{ cart_items|length }})</span>
+                        <span>{{ total_price }}₴</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Доставка</span>
+                        <span>Безкоштовно</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>До оплати</span>
+                        <span>{{ total_price }}₴</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-lock me-2"></i>Безпека</h5>
+                </div>
+                <div class="card-body">
+                    <p><i class="fas fa-check-circle text-success me-2"></i>Безпечна оплата</p>
+                    <p><i class="fas fa-check-circle text-success me-2"></i>Захист даних</p>
+                    <p><i class="fas fa-check-circle text-success me-2"></i>Гарантія повернення</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('same_billing').addEventListener('change', function() {
+    document.getElementById('billing_address').style.display = this.checked ? 'none' : 'block';
+});
+</script>
+{% endblock %}

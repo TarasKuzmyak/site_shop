@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакти | Click&Type{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active" aria-current="page">Контакти</li>
+{% endblock %}
+
+{% block content %}
+<section class="contact-page">
+    <div class="container">
+        <div class="contact-header">
+            <h1>Зв'яжіться з нами</h1>
+            <p>Маєте питання або пропозиції? Напишіть нам, і ми з радістю вам допоможемо. Ви також можете відвідати наш офіс або зв'язатися за телефоном.</p>
+        </div>
+        
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="contact-card">
+                    <div class="contact-card-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Наша адреса</h3>
+                    <p>с. Страч, вул. Зелена 12</p>
+                    <a href="#" class="text-warning">Показати на мапі <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="contact-card">
+                    <div class="contact-card-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3>Телефони</h3>
+                    <a href="tel:+380123456789">+380 12 345 6789</a>
+                    <a href="tel:+380987654321">+380 98 765 4321</a>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="contact-card">
+                    <div class="contact-card-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email</h3>
+                    <a href="mailto:clicktype@gmail.com">clicktype@gmail.com</a>
+                    <a href="mailto:support@clicktype.com">support@clicktype.com</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="contact-form-wrapper">
+                    <form class="contact-form">
+                        <h2>Напишіть нам</h2>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Ваше ім'я" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control" placeholder="Ваш Email" required>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" placeholder="Тема повідомлення">
+                        <textarea class="form-control" placeholder="Ваше повідомлення" required></textarea>
+                        <button type="submit" class="btn btn-send-message">
+                            <i class="fas fa-paper-plane me-2"></i> Надіслати повідомлення
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2540.124208598321!2d30.523123315731644!3d50.45041197947538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4ce50ff0e6e3f%3A0x1c3cb2f6b6a4f0b4!2z0LLRg9C70LjRhtGPINCa0YDQsNGB0L3QvtC00LDRgCwgMTIzLCDQmtC40ZfQsiwgMDIwMDA!5e0!3m2!1suk!2sua!4v1620000000000!5m2!1suk!2sua" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                
+                <div class="contact-card mt-4">
+                    <h3>Години роботи</h3>
+                    <ul class="working-hours">
+                        <li><span>Понеділок - П'ятниця</span> <span>09:00 - 18:00</span></li>
+                        <li><span>Субота</span> <span>10:00 - 16:00</span></li>
+                        <li><span>Неділя</span> <span>Вихідний</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="border-bottom pb-2">
+                {% if category %}
+                {{ category.name }}
+                {% elif brand %}
+                {{ brand.name }}
+                {% else %}
+                Всі товари
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="d-flex align-items-center">
+                <span class="me-2">Сортування:</span>
+                <select class="form-select form-select-sm" style="width: auto;" onchange="window.location.href=this.value">
+                    <option value="?sort_by=-created_at" {% if sort_by == '-created_at' %}selected{% endif %}>За новизною</option>
+                    <option value="?sort_by=price" {% if sort_by == 'price' %}selected{% endif %}>Від дешевих до дорогих</option>
+                    <option value="?sort_by=-price" {% if sort_by == '-price' %}selected{% endif %}>Від дорогих до дешевих</option>
+                    <option value="?sort_by=name" {% if sort_by == 'name' %}selected{% endif %}>За назвою (А-Я)</option>
+                    <option value="?sort_by=-name" {% if sort_by == '-name' %}selected{% endif %}>За назвою (Я-А)</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <span class="text-muted">Знайдено {{ products.paginator.count }} товарів</span>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card h-100 product-card">
+                {% if product.is_new %}
+                <span class="badge bg-success position-absolute top-0 end-0 m-2">Новинка</span>
+                {% endif %}
+                {% if product.discount %}
+                <span class="badge bg-danger position-absolute top-0 start-0 m-2">-{{ product.discount }}%</span>
+                {% endif %}
+                
+                <button class="btn btn-sm btn-outline-secondary position-absolute top-0 start-0 m-2 wishlist-btn" 
+                        data-product-id="{{ product.id }}">
+                    <i class="far fa-heart"></i>
+                </button>
+                
+                <a href="{{ product.get_absolute_url }}">
+                    <img src="{{ product.main_image.url }}" class="card-img-top" alt="{{ product.name }}">
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-warning fw-bold">{{ product.price }}₴</span>
+                        {% if product.old_price %}
+                        <small class="text-muted text-decoration-line-through">{{ product.old_price }}₴</small>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ product.get_absolute_url }}" class="btn btn-sm btn-outline-dark w-100 mb-2">Детальніше</a>
+                    <button class="btn btn-sm btn-warning w-100 add-to-cart" data-product-id="{{ product.id }}">
+                        <i class="fas fa-cart-plus me-2"></i>В кошик
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if products.paginator.num_pages > 1 %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if products.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in products.paginator.page_range %}
+            {% if products.number == num %}
+            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+            {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if products.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<script>
+document.querySelectorAll('.wishlist-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const productId = this.dataset.productId;
+        fetch(`/wishlist/add/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.innerHTML = '<i class="fas fa-heart text-danger"></i>';
+            }
+        });
+    });
+});
+
+document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', function() {
+        const productId = this.dataset.productId;
+        fetch('/cart/add/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: 1
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Товар додано до кошика!');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

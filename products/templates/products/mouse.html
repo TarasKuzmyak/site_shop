@@ -3,37 +3,173 @@
 
 {% block title %}Мишки - Click&Type{% endblock %}
 
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active" aria-current="page">Мишки</li>
+{% endblock %}
+
 {% block content %}
-<section>
-    <div class="container mt-5">
-        <h2 class="text-center title-color">Наші мишки</h2>
+<section class="products-section">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h1 class="fw-bold">Комп'ютерні мишки</h1>
+                <p class="text-muted">Знайдіть ідеальну мишку для роботи, геймінгу або творчості</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="dropdown d-inline-block me-2">
+                    <button class="btn btn-outline-dark dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown">
+                        Сортувати за
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">За популярністю</a></li>
+                        <li><a class="dropdown-item" href="#">За ціною (зростанням)</a></li>
+                        <li><a class="dropdown-item" href="#">За ціною (спаданням)</a></li>
+                        <li><a class="dropdown-item" href="#">За новизною</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown d-inline-block">
+                    <button class="btn btn-outline-dark dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+                        Фільтри
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="dropdown-header">Тип миші</li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Геймерські</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Офісні</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Бездротові</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-header">DPI</li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>До 5000 DPI</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>5000-10000 DPI</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Понад 10000 DPI</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li><button class="dropdown-item text-primary">Застосувати фільтри</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             {% for mouse in mice %}
-            <div class="col-xl-4 col-md-6 col-sm-12 d-flex justify-content-center">
-                <div class="product-card">
-                    <div class="product-image-wrapper">
-                        <img src="{% static mouse.image_url %}" alt="{{ mouse.name }}" class="mouse-product-image">
-                    </div>
-                    <h3 class="product-title">{{ mouse.name }}</h3>
-                    <p class="product-price">Ціна: {{ mouse.price }} грн</p>
-                    <ul class="product-specs">
-                        <li>Підсвітка: {{ mouse.backlight }}</li>
-                        <li>Підключення: {{ mouse.connection }}</li>
-                    </ul>
-                    <div class="button-container">
-                        <!-- Додана кнопка "Додати в кошик" -->
-                    <button class="add-to-cart btn btn-success"
-                    data-id="{{ mouse.id }}" data-name="{{ mouse.name }}" data-price="{{ mouse.price }}">
-                    Додати в кошик
-                </button>
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="product-card h-100">
+                    {% if mouse.is_new %}
+                    <div class="product-badge bg-success">Новинка</div>
+                    {% endif %}
+                    {% if mouse.discount %}
+                    <div class="product-badge bg-danger">-{{ mouse.discount }}%</div>
+                    {% endif %}
+                    
                     <a href="{% url 'product_detail' mouse.id %}">
-                        <button class="buy-button">Купити</button>
+                        <img src="{% static mouse.image_url %}" alt="{{ mouse.name }}" class="img-fluid">
                     </a>
-                </div>
-
+                    
+                    <div class="product-info p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <a href="{% url 'product_detail' mouse.id %}" class="text-decoration-none">
+                                <h3 class="product-title mb-0">{{ mouse.name }}</h3>
+                            </a>
+                            <button class="btn btn-sm btn-outline-secondary wishlist-btn" data-id="{{ mouse.id }}">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="product-price mb-2">
+                            <span class="current-price">{{ mouse.price }}₴</span>
+                            {% if mouse.old_price %}
+                            <span class="old-price">{{ mouse.old_price }}₴</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-rating mb-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star-half-alt text-warning"></i>
+                            <span class="ms-1">({{ mouse.reviews }})</span>
+                        </div>
+                        
+                        <ul class="product-specs mb-3">
+                            <li><i class="fas fa-tachometer-alt me-2 text-muted"></i> {{ mouse.dpi }} DPI</li>
+                            <li><i class="fas fa-lightbulb me-2 text-muted"></i> {{ mouse.backlight }}</li>
+                            <li><i class="fas fa-plug me-2 text-muted"></i> {{ mouse.connection }}</li>
+                        </ul>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="add-to-cart btn btn-warning" 
+                                    data-id="{{ mouse.id }}" 
+                                    data-name="{{ mouse.name }}" 
+                                    data-price="{{ mouse.price }}">
+                                <i class="fas fa-cart-plus me-2"></i>Додати в кошик
+                            </button>
+                            <a href="{% url 'product_detail' mouse.id %}" class="btn btn-outline-dark">
+                                <i class="fas fa-info-circle me-2"></i>Детальніше
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% endfor %}
+        </div>
+        
+        <!-- Пагінація -->
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Попередня</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Наступна</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+<!-- Додаткові секції -->
+<section class="mouse-info py-5 bg-dark text-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-lg-2">
+                <h2 class="mb-4">Технології сучасних мишок</h2>
+                <p>Сучасні комп'ютерні мишки використовують передові технології для забезпечення максимальної точності та комфорту.</p>
+                <div class="row mt-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-box">
+                            <i class="fas fa-bullseye text-warning mb-2"></i>
+                            <h5>Висока точність</h5>
+                            <p class="text-muted">Датчики з роздільною здатністю до 16000 DPI</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-box">
+                            <i class="fas fa-bolt text-warning mb-2"></i>
+                            <h5>Швидкий відгук</h5>
+                            <p class="text-muted">Частота опитування до 1000 Гц</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-box">
+                            <i class="fas fa-weight text-warning mb-2"></i>
+                            <h5>Налаштування ваги</h5>
+                            <p class="text-muted">Системи зміни ваги для ідеального балансу</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="feature-box">
+                            <i class="fas fa-battery-full text-warning mb-2"></i>
+                            <h5>Тривалий заряд</h5>
+                            <p class="text-muted">До 70 годин роботи без підзарядки</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <img src="{% static 'img/mouse-tech.jpg' %}" alt="Технології мишок" class="img-fluid rounded shadow">
+            </div>
         </div>
     </div>
 </section>

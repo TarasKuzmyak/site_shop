@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Click&Type{% endblock %}
+
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'index' %}">Головна</a></li>
+<li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+{% endblock %}
+
+{% block content %}
+<div class="product-detail-page">
+  <div class="container">
+    <div class="row">
+      <!-- Галерея товару -->
+      <div class="col-lg-6">
+        <div class="product-gallery">
+          <div class="main-product-image-wrapper">
+            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="main-product-image img-fluid">
+          </div>
+          
+          {% if product.images.all %}
+          <div class="thumbnail-images">
+            {% for image in product.images.all %}
+            <img src="{{ image.image.url }}" alt="{{ product.name }}" class="thumbnail {% if forloop.first %}active{% endif %}" 
+                 data-main-src="{{ image.image.url }}">
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <!-- Деталі товару -->
+      <div class="col-lg-6">
+        <div class="product-details">
+          <h1>{{ product.name }}</h1>
+          
+          <div class="product-rating mb-3">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+            <span class="ms-2">({{ product.reviews.count }} відгуків)</span>
+          </div>
+          
+          <div class="product-price-large mb-4">
+            {{ product.price }}₴
+            {% if product.old_price %}
+            <span class="old-price text-muted ms-2">{{ product.old_price }}₴</span>
+            {% endif %}
+          </div>
+          
+          <div class="product-meta mb-4">
+            {% if product.brand %}
+            <div>
+              <i class="fas fa-tag"></i>
+              <span>Бренд: <strong>{{ product.brand }}</strong></span>
+            </div>
+            {% endif %}
+            
+            {% if product.availability %}
+            <div>
+              <i class="fas fa-check-circle text-success"></i>
+              <span>В наявності</span>
+            </div>
+            {% else %}
+            <div>
+              <i class="fas fa-clock text-warning"></i>
+              <span>Очікується</span>
+            </div>
+            {% endif %}
+            
+            {% if product.sku %}
+            <div>
+              <i class="fas fa-barcode"></i>
+              <span>Код: {{ product.sku }}</span>
+            </div>
+            {% endif %}
+          </div>
+          
+          <div class="product-description mb-4">
+            {{ product.short_description|safe }}
+          </div>
+          
+          <div class="quantity-selector mb-4">
+            <button class="btn btn-outline-secondary decrease-qty">-</button>
+            <input type="number" class="form-control text-center" value="1" min="1" max="10">
+            <button class="btn btn-outline-secondary increase-qty">+</button>
+          </div>
+          
+          <div class="product-actions-lg">
+            <button class="btn btn-warning btn-lg flex-grow-1 buy-now" 
+                    data-id="{{ product.id }}"
+                    data-name="{{ product.name }}"
+                    data-price="{{ product.price }}"
+                    data-image="{{ product.main_image.url }}">
+              <i class="fas fa-bolt me-2"></i>Купити зараз
+            </button>
+            
+            <button class="btn btn-success btn-lg flex-grow-1 add-to-cart"
+                    data-id="{{ product.id }}"
+                    data-name="{{ product.name }}"
+                    data-price="{{ product.price }}"
+                    data-image="{{ product.main_image.url }}">
+              <i class="fas fa-cart-plus me-2"></i>В кошик
+            </button>
+          </div>
+          
+          <div class="product-features mt-4">
+            <ul class="list-unstyled">
+              <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Безкоштовна доставка від 1000₴</li>
+              <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Гарантія {{ product.warranty }} місяців</li>
+              <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Офіційна гарантія</li>
+              <li><i class="fas fa-check text-success me-2"></i> Повернення протягом 14 днів</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Таби з додатковою інформацією -->
+    <div class="product-tabs">
+      <ul class="nav nav-tabs" id="productTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+            Опис
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab">
+            Характеристики
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+            Відгуки ({{ product.reviews.count }})
+          </button>
+        </li>
+      </ul>
+      
+      <div class="tab-content" id="productTabsContent">
+        <div class="tab-pane fade show active" id="description" role="tabpanel">
+          <div class="product-full-description">
+            {{ product.full_description|safe }}
+          </div>
+        </div>
+        
+        <div class="tab-pane fade" id="specs" role="tabpanel">
+          <table class="specs-table">
+            {% for spec in product.specifications.all %}
+            <tr>
+              <td>{{ spec.name }}</td>
+              <td>{{ spec.value }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        
+        <div class="tab-pane fade" id="reviews" role="tabpanel">
+          {% if product.reviews.all %}
+            {% for review in product.reviews.all %}
+            <div class="review-card">
+              <div class="review-header">
+                <img src="{% if review.user.profile.avatar %}{{ review.user.profile.avatar.url }}{% else %}{% static 'img/default-avatar.jpg' %}{% endif %}" 
+                     alt="{{ review.user.get_full_name }}" class="review-avatar">
+                <div class="review-user">
+                  <h5>{{ review.user.get_full_name }}</h5>
+                  <div class="review-rating">
+                    {% for i in "12345" %}
+                      {% if forloop.counter <= review.rating %}
+                        <i class="fas fa-star"></i>
+                      {% else %}
+                        <i class="far fa-star"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="review-date ms-auto">
+                  {{ review.created_at|date:"d.m.Y" }}
+                </div>
+              </div>
+              <div class="review-text mt-3">
+                <p>{{ review.text }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="alert alert-info">
+              Поки що немає відгуків про цей товар. Залиште перший!
+            </div>
+          {% endif %}
+          
+          {% if user.is_authenticated %}
+          <div class="add-review mt-5">
+            <h4>Залишити відгук</h4>
+            <form method="post" action="{% url 'add_review' product.id %}">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="rating" class="form-label">Оцінка</label>
+                <select class="form-select" id="rating" name="rating" required>
+                  <option value="5">Відмінно (5 зірок)</option>
+                  <option value="4">Добре (4 зірки)</option>
+                  <option value="3">Задовільно (3 зірки)</option>
+                  <option value="2">Погано (2 зірки)</option>
+                  <option value="1">Дуже погано (1 зірка)</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="reviewText" class="form-label">Текст відгуку</label>
+                <textarea class="form-control" id="reviewText" name="text" rows="5" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-warning">Надіслати відгук</button>
+            </form>
+          </div>
+          {% else %}
+          <div class="alert alert-warning mt-4">
+            Щоб залишити відгук, будь ласка, <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">увійдіть</a> або <a href="{% url 'register' %}" class="alert-link">зареєструйтесь</a>.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Схожі товари -->
+    {% if related_products %}
+    <div class="related-products mt-5">
+      <h3 class="mb-4">Схожі товари</h3>
+      <div class="row">
+        {% for product in related_products %}
+        <div class="col-lg-3 col-md-4 col-6 mb-4">
+          <div class="product-card h-100">
+            {% if product.is_new %}
+            <div class="product-badge badge-new">Новинка</div>
+            {% endif %}
+            {% if product.discount %}
+            <div class="product-badge badge-sale">-{{ product.discount }}%</div>
+            {% endif %}
+            
+            <button class="wishlist-btn" data-id="{{ product.id }}">
+              <i class="far fa-heart"></i>
+            </button>
+            
+            <a href="{{ product.get_absolute_url }}">
+              <div class="product-image-wrapper">
+                <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="product-image">
+              </div>
+            </a>
+            
+            <div class="product-info">
+              <a href="{{ product.get_absolute_url }}" class="text-decoration-none">
+                <h3 class="product-title">{{ product.name }}</h3>
+              </a>
+              
+              <div class="product-price">
+                <span class="current-price">{{ product.price }}₴</span>
+                {% if product.old_price %}
+                <span class="old-price">{{ product.old_price }}₴</span>
+                {% endif %}
+              </div>
+              
+              <div class="product-actions">
+                <button class="btn btn-success btn-add-to-cart"
+                        data-id="{{ product.id }}"
+                        data-name="{{ product.name }}"
+                        data-price="{{ product.price }}"
+                        data-image="{{ product.main_image.url }}">
+                  <i class="fas fa-cart-plus"></i>
+                </button>
+                
+                <a href="{{ product.get_absolute_url }}" class="btn btn-warning btn-buy-now">
+                  <i class="fas fa-eye"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Обробка галереї товару
+document.querySelectorAll('.thumbnail').forEach(thumb => {
+  thumb.addEventListener('click', function() {
+    const mainImage = document.querySelector('.main-product-image');
+    mainImage.src = this.dataset.mainSrc;
+    
+    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Обробка кількості товару
+document.querySelector('.decrease-qty').addEventListener('click', function() {
+  const input = document.querySelector('.quantity-selector input');
+  if (parseInt(input.value) > 1) {
+    input.value = parseInt(input.value) - 1;
+  }
+});
+
+document.querySelector('.increase-qty').addEventListener('click', function() {
+  const input = document.querySelector('.quantity-selector input');
+  input.value = parseInt(input.value) + 1;
+});
+</script>
+{% endblock %}

@@ -5,84 +5,143 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Click&Type - інтернет-магазин якісних механічних клавіатур, комп'ютерних мишок та гарнітур">
     <title>{% block title %}Click&Type{% endblock %}</title>
     <link rel="shortcut icon" href="{% static 'img/logo_kolo.png' %}">
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 
 <body>
-
     <!-- Хедер -->
-    <header class="d-flex justify-content-between align-items-center p-3">
-        <button id="menu-button" class="btn btn-outline-light">Меню</button>
-
-        <!-- Центроване лого -->
-        <h1 class="text-center flex-grow-1 m-0">
-            <a href="{% url 'index' %}" class="text-warning fw-bold text-decoration-none">
-                Click&Type
-            </a>
-        </h1>
-
-
-        <button type="button" id="open-cart" class="btn btn-warning fw-bold" data-bs-toggle="modal"
-            data-bs-target="#cartModal" style="margin-right: 6rem;">
-            🛒 Кошик <span class="cart-count badge bg-danger">0</span>
+    <header class="d-flex justify-content-between align-items-center p-3 bg-dark">
+        <button id="menu-button" class="btn btn-outline-warning d-flex align-items-center">
+            <i class="fas fa-bars me-2"></i>Меню
         </button>
-        <!-- Кнопка входу / виходу -->
-        {% if user.is_authenticated %}
-        <form action="{% url 'logout' %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger fw-bold">Вийти з акаунта</button>
-        </form>
-        {% else %}
-        <button id="login-button" data-bs-toggle="modal" data-bs-target="#loginModal"
-            class="btn btn-warning fw-bold">Log in</button>
-        {% endif %}
+
+        <!-- Лого з іконкою -->
+        <a href="{% url 'index' %}" class="text-decoration-none">
+            <h1 class="text-center m-0">
+                <span class="text-warning fw-bold"><i class="fas fa-keyboard me-2"></i>Click&Type</span>
+            </h1>
+        </a>
+
+        <div class="d-flex align-items-center">
+            <!-- Кнопка кошика -->
+            <button type="button" id="open-cart" class="btn btn-warning fw-bold me-3" data-bs-toggle="modal"
+                data-bs-target="#cartModal">
+                <i class="fas fa-shopping-cart me-2"></i>Кошик <span class="cart-count badge bg-danger">0</span>
+            </button>
+            
+            <!-- Кнопка входу/виходу -->
+            {% if user.is_authenticated %}
+            <div class="dropdown">
+                <button class="btn btn-outline-warning dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                    <i class="fas fa-user-circle me-2"></i>{{ user.first_name }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>Профіль</a></li>
+                    <li><a class="dropdown-item" href="{% url 'orders' %}"><i class="fas fa-clipboard-list me-2"></i>Замовлення</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="POST" class="mb-0">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="fas fa-sign-out-alt me-2"></i>Вийти
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+            <button id="login-button" data-bs-toggle="modal" data-bs-target="#loginModal"
+                class="btn btn-warning fw-bold">
+                <i class="fas fa-sign-in-alt me-2"></i>Увійти
+            </button>
+            {% endif %}
+        </div>
     </header>
 
     <!-- Бокове меню -->
     <div id="popup-menu" class="hidden d-flex flex-column justify-content-between">
         <ul class="list-unstyled mb-3">
             <li class="mb-2">
-                <a href="{% url 'keyboard' %}" class="btn w-100">Клавіатури</a>
+                <a href="{% url 'index' %}" class="btn w-100 text-start">
+                    <i class="fas fa-home me-2"></i>Головна
+                </a>
             </li>
             <li class="mb-2">
-                <a href="{% url 'mouse' %}" class="btn w-100">Мишки</a>
+                <a href="{% url 'keyboard' %}" class="btn w-100 text-start">
+                    <i class="fas fa-keyboard me-2"></i>Клавіатури
+                </a>
+            </li>
+            <li class="mb-2">
+                <a href="{% url 'mouse' %}" class="btn w-100 text-start">
+                    <i class="fas fa-mouse me-2"></i>Мишки
+                </a>
+            </li>
+            <li class="mb-2">
+                <a href="{% url 'headsets' %}" class="btn w-100 text-start">
+                    <i class="fas fa-headphones me-2"></i>Гарнітури
+                </a>
+            </li>
+            <li class="mb-2">
+                <a href="{% url 'about' %}" class="btn w-100 text-start">
+                    <i class="fas fa-info-circle me-2"></i>Про нас
+                </a>
             </li>
             <li>
-                <a href="{% url 'headsets' %}" class="btn w-100">Гарнітури</a>
+                <a href="{% url 'contact' %}" class="btn w-100 text-start">
+                    <i class="fas fa-envelope me-2"></i>Контакти
+                </a>
             </li>
         </ul>
-        <button id="close-menu" class="btn w-100">Закрити</button>
+        <button id="close-menu" class="btn btn-outline-warning w-100">
+            <i class="fas fa-times me-2"></i>Закрити
+        </button>
     </div>
-
 
     <!-- Модальне вікно входу -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="background-color: #464952; color: white; border-radius: 12px;">
-                <div class="modal-header">
-                    <h5 class="modal-title text-warning" id="loginModalLabel">Вхід</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-warning" id="loginModalLabel">
+                        <i class="fas fa-sign-in-alt me-2"></i>Вхід
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="login-form">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="email" class="form-label">Ваш E-mail</label>
-                            <input type="text" class="form-control text-center" name="email" id="email" required>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-envelope"></i></span>
+                                <input type="text" class="form-control" name="email" id="email" required>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Пароль</label>
-                            <input type="password" class="form-control text-center" name="password" id="password"
-                                required>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" name="password" id="password" required>
+                            </div>
                         </div>
-                        <button type="submit" class="btn w-100 mt-3 btn-warning fw-bold">Увійти</button>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Запам'ятати мене</label>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 fw-bold">
+                            <i class="fas fa-sign-in-alt me-2"></i>Увійти
+                        </button>
                     </form>
                     <div class="text-center mt-3">
                         <p>Ще не маєте акаунта?</p>
-                        <button id="openRegisterModal" class="btn btn-outline-light w-100">Зареєструватися</button>
+                        <button id="openRegisterModal" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-user-plus me-2"></i>Зареєструватися
+                        </button>
                     </div>
                 </div>
             </div>
@@ -92,88 +151,153 @@
     <!-- Модальне вікно реєстрації -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content" style="background-color: #464952; color: white; border-radius: 12px;">
-                <div class="modal-header">
-                    <h5 class="modal-title text-warning" id="registerModalLabel">Реєстрація</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-warning" id="registerModalLabel">
+                        <i class="fas fa-user-plus me-2"></i>Реєстрація
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="register-form" method="POST">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="firstName" class="form-label">Ім'я</label>
-                            <input type="text" class="form-control text-center" name="first_name" id="firstName"
-                                required>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" name="first_name" id="firstName" required>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="lastName" class="form-label">Прізвище</label>
-                            <input type="text" class="form-control text-center" name="last_name" id="lastName" required>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" name="last_name" id="lastName" required>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Ваш Email</label>
-                            <input type="email" class="form-control text-center" name="email" id="email" required>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" name="email" id="email" required>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Пароль</label>
-                            <input type="password" class="form-control text-center" name="password" id="password"
-                                required>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" name="password" id="password" required>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="confirmPassword" class="form-label">Повторіть пароль</label>
-                            <input type="password" class="form-control text-center" name="confirm_password"
-                                id="confirmPassword" required>
+                            <div class="input-group">
+                                <span class="input-group-text bg-warning"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" name="confirm_password"
+                                    id="confirmPassword" required>
+                            </div>
                         </div>
-                        <button type="submit" class="btn w-100 mt-3 btn-warning fw-bold">Зареєструватися</button>
+                        <button type="submit" class="btn btn-warning w-100 fw-bold">
+                            <i class="fas fa-user-plus me-2"></i>Зареєструватися
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Модальне вікно кошика -->
     <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-dark text-white">
-                    <h5 class="modal-title" id="cartModalLabel">Ваш кошик</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-warning" id="cartModalLabel">
+                        <i class="fas fa-shopping-cart me-2"></i>Ваш кошик
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ul id="cart-items" class="list-group">
+                    <div id="cart-empty" class="text-center py-4">
+                        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">Ваш кошик порожній</h5>
+                        <p class="text-muted">Додайте товари, щоб продовжити</p>
+                    </div>
+                    <ul id="cart-items" class="list-group mb-3" style="display: none;">
                         <!-- Динамічно наповнювані елементи кошика -->
                     </ul>
                 </div>
-                <div class="modal-footer">
-                    <h5 class="me-auto">Загальна сума: <span id="total-price" class="fw-bold text-success">0₴</span>
-                    </h5>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрити</button>
-                    <button type="button" class="btn btn-success">Оформити замовлення</button>
+                <div class="modal-footer border-0">
+                    <h5 class="me-auto">Загальна сума: <span id="total-price" class="fw-bold text-warning">0₴</span></h5>
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Продовжити покупки</button>
+                    <button type="button" class="btn btn-warning fw-bold" id="checkout-btn">Оформити замовлення</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Головний контент -->
-    <main class="container">
+    <main class="container my-4">
+        {% block breadcrumbs %}
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-light p-3 rounded">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-decoration-none">Головна</a></li>
+                {% block breadcrumb_items %}{% endblock %}
+            </ol>
+        </nav>
+        {% endblock %}
+        
         {% block content %}
         <!-- Тут буде контент сторінок -->
         {% endblock %}
     </main>
 
-    <footer class="text-center p-3 bg-dark text-light">
-        <p>&copy; 2024 Click&Type. Усі права захищено.</p>
-        <p>Зв'язатися з нами: <a href="mailto:clicktype@gmail.com" class="text-warning">clicktype@gmail.com</a></p>
-        <p>Наші соцмережі:
-            <a href="https://facebook.com" class="text-warning">Facebook</a> |
-            <a href="https://instagram.com" class="text-warning">Instagram</a>
-        </p>
-        </footer>
+    <!-- Футер -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-warning mb-3"><i class="fas fa-keyboard me-2"></i>Click&Type</h5>
+                    <p>Інтернет-магазин якісних механічних клавіатур, комп'ютерних мишок та гарнітур для геймерів та професіоналів.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-warning mb-3">Контакти</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-warning"></i> м. Страч, вул. Зелена 12</li>
+                        <li class="mb-2"><i class="fas fa-phone me-2 text-warning"></i> +380 12 345 6789</li>
+                        <li><i class="fas fa-envelope me-2 text-warning"></i> <a href="mailto:clicktype@gmail.com" class="text-light">clicktype@gmail.com</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="text-warning mb-3">Соціальні мережі</h5>
+                    <div class="social-icons">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-telegram fa-lg"></i></a>
+                        <a href="#" class="text-light"><i class="fab fa-youtube fa-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-secondary">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2025 Click&Type. Усі права захищено.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-light me-3">Політика конфіденційності</a>
+                    <a href="#" class="text-light">Умови використання</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Кнопка "Наверх" -->
+    <button id="back-to-top" class="btn btn-warning btn-lg rounded-circle">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{% static 'js/script.js' %}" defer></script>
-
-
-
 </body>
-
 </html>
