@@ -21,171 +21,164 @@
                         Сортувати за
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">За популярністю</a></li>
-                        <li><a class="dropdown-item" href="#">За ціною (зростанням)</a></li>
-                        <li><a class="dropdown-item" href="#">За ціною (спаданням)</a></li>
-                        <li><a class="dropdown-item" href="#">За новизною</a></li>
-                    </ul>
-                </div>
-                <div class="dropdown d-inline-block">
-                    <button class="btn btn-outline-dark dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
-                        Фільтри
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="dropdown-header">Тип гарнітури</li>
-                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Геймерські</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Музичні</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Офісні</a></li>
-                        <li class="dropdown-divider"></li>
-                        <li class="dropdown-header">Підключення</li>
-                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Дротові</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>Бездротові</a></li>
-                        <li class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#"><i class="far fa-square me-2"></i>З шумозаглушенням</a></li>
-                        <li class="dropdown-divider"></li>
-                        <li><button class="dropdown-item text-primary">Застосувати фільтри</button></li>
+                        <li><a class="dropdown-item" href="?sort_by=-created_at">За новизною</a></li>
+                        <li><a class="dropdown-item" href="?sort_by=price">За ціною (зростанням)</a></li>
+                        <li><a class="dropdown-item" href="?sort_by=-price">За ціною (спаданням)</a></li>
+                        <li><a class="dropdown-item" href="?sort_by=name">За назвою (А-Я)</a></li>
                     </ul>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            {% for headset in headsets %}
+            {% for product in products %}
             <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                <div class="product-card h-100">
-                    {% if headset.is_new %}
+                <div class="product-card h-100 position-relative">
+                    {% if product.is_new %}
                     <div class="product-badge bg-success">Новинка</div>
                     {% endif %}
-                    {% if headset.discount %}
-                    <div class="product-badge bg-danger">-{{ headset.discount }}%</div>
+                    {% if product.discount %}
+                    <div class="product-badge bg-danger">-{{ product.discount }}%</div>
                     {% endif %}
                     
-                    <a href="{% url 'product_detail' headset.id %}">
-                        <img src="{% static headset.image_url %}" alt="{{ headset.name }}" class="img-fluid">
-                    </a>
+                    <!-- Fixed image container -->
+                    <div class="product-image-container position-relative">
+                        <a href="{% url 'product_detail' product.slug %}">
+                            {% if product.main_image %}
+                            <img src="{% static product.image_path %}" alt="{{ product.name }}" class="img-fluid" onerror="this.onerror=null; this.src='{% static 'img/no-image.png' %}'">
+                            {% else %}
+                                <img src="{% static 'img/no-image.png' %}" alt="{{ product.name }}" class="img-fluid">
+                            {% endif %}
+                        </a>
+                    </div>
                     
                     <div class="product-info p-3">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <a href="{% url 'product_detail' headset.id %}" class="text-decoration-none">
-                                <h3 class="product-title mb-0">{{ headset.name }}</h3>
+                            <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none">
+                                <h3 class="product-title mb-0">{{ product.name }}</h3>
                             </a>
-                            <button class="btn btn-sm btn-outline-secondary wishlist-btn" data-id="{{ headset.id }}">
-                                <i class="far fa-heart"></i>
-                            </button>
                         </div>
                         
                         <div class="product-price mb-2">
-                            <span class="current-price">{{ headset.price }}₴</span>
-                            {% if headset.old_price %}
-                            <span class="old-price">{{ headset.old_price }}₴</span>
+                            <span class="current-price">{{ product.price }}₴</span>
+                            {% if product.old_price %}
+                            <span class="old-price">{{ product.old_price }}₴</span>
                             {% endif %}
                         </div>
                         
-                        <div class="product-rating mb-2">
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star-half-alt text-warning"></i>
-                            <span class="ms-1">({{ headset.reviews }})</span>
-                        </div>
-                        
-                        <ul class="product-specs mb-3">
-                            <li><i class="fas fa-headphones me-2 text-muted"></i> {{ headset.type }}</li>
-                            <li><i class="fas fa-microphone me-2 text-muted"></i> {{ headset.mic }}</li>
-                            <li><i class="fas fa-plug me-2 text-muted"></i> {{ headset.connection }}</li>
-                        </ul>
-                        
-                        <div class="d-grid gap-2">
+                        <div class="d-grid gap-2 mt-auto">
                             <button class="add-to-cart btn btn-warning" 
-                                    data-id="{{ headset.id }}" 
-                                    data-name="{{ headset.name }}" 
-                                    data-price="{{ headset.price }}">
+                                    data-id="{{ product.id }}" 
+                                    data-name="{{ product.name }}" 
+                                    data-price="{{ product.price }}"
+                                    data-image="{% if product.image_path %}{% static product.image_path %}{% else %}{% static 'img/no-image.png' %}{% endif %}">
                                 <i class="fas fa-cart-plus me-2"></i>Додати в кошик
                             </button>
-                            <a href="{% url 'product_detail' headset.id %}" class="btn btn-outline-dark">
+                            <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline-dark">
                                 <i class="fas fa-info-circle me-2"></i>Детальніше
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <h4 class="text-muted">Наразі немає доступних гарнітур</h4>
+                <p>Будь ласка, завітайте пізніше</p>
+            </div>
             {% endfor %}
         </div>
         
-        <!-- Пагінація -->
+        {% if products.has_other_pages %}
         <nav aria-label="Page navigation" class="mt-5">
             <ul class="pagination justify-content-center">
+                {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}" tabindex="-1">Попередня</a>
+                </li>
+                {% else %}
                 <li class="page-item disabled">
                     <a class="page-link" href="#" tabindex="-1">Попередня</a>
                 </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                {% endif %}
+                
+                {% for i in products.paginator.page_range %}
+                <li class="page-item {% if products.number == i %}active{% endif %}">
+                    <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                </li>
+                {% endfor %}
+                
+                {% if products.has_next %}
                 <li class="page-item">
+                    <a class="page-link" href="?page={{ products.next_page_number }}">Наступна</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
                     <a class="page-link" href="#">Наступна</a>
                 </li>
+                {% endif %}
             </ul>
         </nav>
+        {% endif %}
     </div>
 </section>
 
-<!-- Додаткові секції -->
-<section class="headset-info py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Як вибрати гарнітуру?</h2>
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="info-card h-100 p-4 text-center">
-                    <div class="info-icon mb-3">
-                        <i class="fas fa-music fa-3x text-warning"></i>
-                    </div>
-                    <h4>Якість звуку</h4>
-                    <p>Звертайте увагу на діапазон частот (20-20000 Гц - стандарт) та імпеданс (32 Ом - оптимально для ПК)</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="info-card h-100 p-4 text-center">
-                    <div class="info-icon mb-3">
-                        <i class="fas fa-microphone-alt fa-3x text-warning"></i>
-                    </div>
-                    <h4>Мікрофон</h4>
-                    <p>Для геймінгу важливе шумозаглушення та чутливість. Для роботи - якість передачі голосу</p>
-                </div>
-            </div>
-            <div class="col-md-4 mb-4">
-                <div class="info-card h-100 p-4 text-center">
-                    <div class="info-icon mb-3">
-                        <i class="fas fa-head-side-headphones fa-3x text-warning"></i>
-                    </div>
-                    <h4>Комфорт</h4>
-                    <p>М'які амбушюри, регулювання розміру та вага гарнітури - ключові фактори для тривалого використання</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row mt-4 align-items-center">
-            <div class="col-lg-6">
-                <img src="{% static 'img/headset-comfort.jpg' %}" alt="Комфорт гарнітури" class="img-fluid rounded shadow">
-            </div>
-            <div class="col-lg-6">
-                <h3 class="mt-4 mt-lg-0">Технології в сучасних гарнітурах</h3>
-                <ul class="list-unstyled">
-                    <li class="mb-3">
-                        <h5><i class="fas fa-volume-off text-warning me-2"></i> Активне шумозаглушення</h5>
-                        <p>Використовує мікрофони для аналізу зовнішнього шуму та генерує протифазний сигнал для його нейтралізації</p>
-                    </li>
-                    <li class="mb-3">
-                        <h5><i class="fas fa-surround text-warning me-2"></i> Об'ємний звук 7.1</h5>
-                        <p>Створює ефект просторового звучання, важливий для геймерів та кіноманів</p>
-                    </li>
-                    <li>
-                        <h5><i class="fas fa-bluetooth text-warning me-2"></i> Бездротові технології</h5>
-                        <p>Bluetooth 5.0 та радіодіапазон 2.4 Гц забезпечують стабільне з'єднання без затримок</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
+<style>
+    .product-image-container {
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+    .product-image-container img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    .product-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 10px;
+        border-radius: 3px;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: bold;
+        z-index: 1;
+    }
+    .product-card {
+        position: relative;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .product-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .current-price {
+        font-weight: bold;
+        color: #ff5722;
+    }
+    .old-price {
+        text-decoration: line-through;
+        color: #999;
+        margin-left: 8px;
+    }
+    .add-to-cart {
+        margin-top: auto;
+    }
+</style>
 {% endblock %}

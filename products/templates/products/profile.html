@@ -60,7 +60,7 @@
                     <h4 class="mb-0"><i class="fas fa-user-edit me-2"></i>Особисті дані</h4>
                 </div>
                 <div class="card-body">
-                    <form method="POST" class="row g-3">
+                    <form method="POST" action="{% url 'update_profile' %}" class="row g-3">
                         {% csrf_token %}
                         <div class="col-md-6">
                             <label for="first_name" class="form-label">Ім'я</label>
@@ -80,7 +80,7 @@
                             <label for="email" class="form-label">Електронна пошта</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-warning"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control bg-light" name="email" id="email" value="{{ user.email }}" readonly>
+                                <input type="email" class="form-control" name="email" id="email" value="{{ user.email }}" required>
                             </div>
                         </div>
                         <div class="col-12">
@@ -91,10 +91,10 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="birthday" class="form-label">Дата народження</label>
+                            <label for="birth_date" class="form-label">Дата народження</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-warning"><i class="fas fa-birthday-cake"></i></span>
-                                <input type="date" class="form-control" name="birthday" id="birthday" value="{{ user.profile.birthday|date:'Y-m-d'|default:'' }}">
+                                <input type="date" class="form-control" name="birth_date" id="birth_date" value="{{ user.profile.birth_date|date:'Y-m-d'|default:'' }}">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -143,10 +143,73 @@
                                 <p class="mb-1">{{ address.city }}, {{ address.address }}</p>
                                 <p class="mb-2">{{ address.postal_code }}</p>
                                 <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-outline-dark btn-sm">Редагувати</button>
+                                    <button class="btn btn-outline-dark btn-sm" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editAddressModal{{ address.id }}">
+                                        Редагувати
+                                    </button>
                                     {% if not address.is_default %}
-                                    <button class="btn btn-outline-warning btn-sm">Зробити основним</button>
+                                    <form method="POST" action="{% url 'set_default_address' address.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-warning btn-sm">
+                                            Зробити основним
+                                        </button>
+                                    </form>
                                     {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Модальне вікно для редагування адреси -->
+                        <div class="modal fade" id="editAddressModal{{ address.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-dark text-light">
+                                        <h5 class="modal-title">Редагування адреси</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="{% url 'update_address' address.id %}">
+                                            {% csrf_token %}
+                                            <div class="mb-3">
+                                                <label class="form-label">Назва адреси</label>
+                                                <input type="text" class="form-control" name="name" value="{{ address.name }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Отримувач</label>
+                                                <input type="text" class="form-control" name="recipient" value="{{ address.recipient }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Телефон</label>
+                                                <input type="tel" class="form-control" name="phone" value="{{ address.phone }}" required>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Місто</label>
+                                                    <input type="text" class="form-control" name="city" value="{{ address.city }}" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Поштовий індекс</label>
+                                                    <input type="text" class="form-control" name="postal_code" value="{{ address.postal_code }}">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Адреса</label>
+                                                <textarea class="form-control" name="address" rows="2" required>{{ address.address }}</textarea>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="is_default" 
+                                                       id="defaultAddress{{ address.id }}" {% if address.is_default %}checked{% endif %}>
+                                                <label class="form-check-label" for="defaultAddress{{ address.id }}">
+                                                    Зробити адресою за замовчуванням
+                                                </label>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Скасувати</button>
+                                                <button type="submit" class="btn btn-warning">Зберегти зміни</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -173,42 +236,43 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addressForm">
+                <form id="addressForm" method="POST" action="{% url 'add_address' %}">
+                    {% csrf_token %}
                     <div class="mb-3">
                         <label for="addressName" class="form-label">Назва адреси (наприклад, Дім, Робота)</label>
-                        <input type="text" class="form-control" id="addressName" required>
+                        <input type="text" class="form-control" name="name" id="addressName" required>
                     </div>
                     <div class="mb-3">
                         <label for="recipient" class="form-label">Отримувач</label>
-                        <input type="text" class="form-control" id="recipient" required>
+                        <input type="text" class="form-control" name="recipient" id="recipient" required>
                     </div>
                     <div class="mb-3">
                         <label for="phone" class="form-label">Телефон</label>
-                        <input type="tel" class="form-control" id="phone" required>
+                        <input type="tel" class="form-control" name="phone" id="phone" required>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="city" class="form-label">Місто</label>
-                            <input type="text" class="form-control" id="city" required>
+                            <input type="text" class="form-control" name="city" id="city" required>
                         </div>
                         <div class="col-md-6">
                             <label for="postalCode" class="form-label">Поштовий індекс</label>
-                            <input type="text" class="form-control" id="postalCode">
+                            <input type="text" class="form-control" name="postal_code" id="postalCode">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="address" class="form-label">Адреса</label>
-                        <textarea class="form-control" id="address" rows="2" required></textarea>
+                        <textarea class="form-control" name="address" id="address" rows="2" required></textarea>
                     </div>
                     <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="defaultAddress">
+                        <input class="form-check-input" type="checkbox" name="is_default" id="defaultAddress">
                         <label class="form-check-label" for="defaultAddress">Зробити адресою за замовчуванням</label>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Скасувати</button>
+                        <button type="submit" class="btn btn-warning">Зберегти адресу</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Скасувати</button>
-                <button type="button" class="btn btn-warning">Зберегти адресу</button>
             </div>
         </div>
     </div>

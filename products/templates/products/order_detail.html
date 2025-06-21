@@ -2,81 +2,81 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="border-bottom pb-2">
-                <i class="fas fa-clipboard-list me-2"></i>Замовлення #{{ order.order_number }}
-                <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %} float-end">
-                    {{ order.get_status_display }}
-                </span>
-            </h2>
+    <h2 class="mb-4">Замовлення #{{ order.order_number }}</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Інформація про замовлення</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Статус:</strong> 
+                        <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </p>
+                    <p><strong>Дата створення:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                    <p><strong>Спосіб оплати:</strong> {{ order.get_payment_method_display }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Місто доставки:</strong> {{ order.nova_poshta_city }}</p>
+                    <p><strong>Відділення Нової Пошти:</strong> {{ order.nova_poshta_department_name }}</p>
+                    <p><strong>Номер відділення:</strong> {{ order.nova_poshta_department }}</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p><strong>Ім'я отримувача:</strong> {{ order.customer_name }}</p>
+                    <p><strong>Телефон отримувача:</strong> {{ order.customer_phone }}</p>
+                    <p><strong>Email отримувача:</strong> {{ order.customer_email }}</p>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">Товари</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Товар</th>
-                                    <th>Кількість</th>
-                                    <th>Ціна</th>
-                                    <th>Сума</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in order.items.all %}
-                                <tr>
-                                    <td>{{ item.product.name }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td>{{ item.price }}₴</td>
-                                    <td>{{ item.total_price }}₴</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3">Всього:</th>
-                                    <th>{{ order.total_price }}₴</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Товари</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Товар</th>
+                            <th>Ціна</th>
+                            <th>Кількість</th>
+                            <th>Сума</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.price }}₴</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.total_price }}₴</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-end mt-3">
+                <div class="fw-bold">
+                    Всього: {{ order.total_price }}₴
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">Адреса доставки</h5>
-                </div>
-                <div class="card-body">
-                    <p>{{ order.shipping_address.recipient }}</p>
-                    <p>{{ order.shipping_address.city }}, {{ order.shipping_address.address }}</p>
-                    <p>Телефон: {{ order.shipping_address.phone }}</p>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0">Додаткова інформація</h5>
-                </div>
-                <div class="card-body">
-                    <p><strong>Дата замовлення:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
-                    <p><strong>Спосіб оплати:</strong> {{ order.get_payment_method_display }}</p>
-                    {% if order.note %}
-                    <p><strong>Примітка:</strong> {{ order.note }}</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+    </div>
+    
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'orders' %}" class="btn btn-outline-dark">
+            <i class="fas fa-arrow-left me-2"></i>До списку замовлень
+        </a>
+        <a href="#" class="btn btn-warning" onclick="window.print()">
+            <i class="fas fa-print me-2"></i>Друкувати
+        </a>
     </div>
 </div>
 {% endblock %}

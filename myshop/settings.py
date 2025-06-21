@@ -156,3 +156,26 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_AGE = 86400  # 1 день
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sergijgul9@gmail.com'  # Замінити на ваш email
+EMAIL_HOST_PASSWORD = 'django-insecure-v1hc=6y6c&&-83kgo1#zs6teuqs2$%3=ygiahot00cuvg$k$cp'  # Замінити на пароль додатка
+DEFAULT_FROM_EMAIL = 'sergijgul9@gmail.com'  # Замінити на ваш email
+ADMIN_EMAIL = 'sergijgul9@gmail.com'  # Замінити на email адміністратора
+
+
+# Додати ці налаштування в кінець файлу
+
+# Налаштування автентифікації
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Налаштування сесії
+SESSION_COOKIE_AGE = 1209600  # 2 тижні (у секундах)
+SESSION_SAVE_EVERY_REQUEST = True
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

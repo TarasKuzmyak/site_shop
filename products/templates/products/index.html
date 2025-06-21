@@ -15,7 +15,7 @@
                 <a href="#featured" class="btn btn-outline-light btn-lg">Дізнатись більше</a>
             </div>
             <div class="col-lg-6">
-                <img src="{% static 'img/keyboards/AJAZZ AK820 Pro MOA.jpg' %}" alt="Механічна клавіатура" class="img-fluid rounded-3 shadow-lg">
+                <img src="https://content1.rozetka.com.ua/goods/images/big/525356556.jpg" alt="Механічна клавіатура" class="img-fluid rounded-3 shadow-lg">
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
             <div class="col-md-4">
                 <div class="category-card h-100">
                     <a href="{% url 'keyboard' %}">
-                        <img src="{% static 'img/news/podsvetka_klaviaturi_real_el_gaming_8710_tkl_backlit_nochiyu(22).jpg' %}" alt="Клавіатури" class="img-fluid rounded-top">
+                        <img src="https://content2.rozetka.com.ua/goods/images/big/495067484.jpg" alt="Клавіатури" class="img-fluid rounded-top">
                         <div class="category-info p-4">
                             <h3 class="text-center">Клавіатури</h3>
                             <p class="text-center text-muted">Від механічних до мембранних - знайдіть ідеальну для себе</p>
@@ -40,7 +40,7 @@
             <div class="col-md-4">
                 <div class="category-card h-100">
                     <a href="{% url 'mouse' %}">
-                        <img src="{% static 'img/category-mouse.jpg' %}" alt="Мишки" class="img-fluid rounded-top">
+                        <img src="https://yabloki.ua/media/cache/sylius_shop_product_original/d2/3b/misha-razer-basilisk-v3-rz01-04000100-r3m1_25a7c0cb-cc87-40d3-acb2-39d80f23da27-1.png.webp" alt="Мишки" class="img-fluid rounded-top">
                         <div class="category-info p-4">
                             <h3 class="text-center">Мишки</h3>
                             <p class="text-center text-muted">Висока точність та ергономіка для комфортної роботи</p>
@@ -51,7 +51,7 @@
             <div class="col-md-4">
                 <div class="category-card h-100">
                     <a href="{% url 'headsets' %}">
-                        <img src="{% static 'img/category-headset.jpg' %}" alt="Гарнітури" class="img-fluid rounded-top">
+                        <img src="https://yabloki.ua/media/cache/sylius_shop_product_original/0f/9e/garnitura-logitech-g435-lightspeed-wireless-gaming-white-981-001074_2c392df2-a601-44e3-b03c-5718caca8dbf-1.png.webp" alt="Гарнітури" class="img-fluid rounded-top">
                         <div class="category-info p-4">
                             <h3 class="text-center">Гарнітури</h3>
                             <p class="text-center text-muted">Чистий звук та комфорт для тривалого використання</p>
@@ -63,45 +63,6 @@
     </div>
 </section>
 
-<!-- Популярні товари -->
-<section class="popular-products mb-5">
-    <div class="container">
-        <h2 class="text-center mb-5 section-title">Популярні товари</h2>
-        <div class="row g-4">
-            {% for product in popular_products %}
-            <div class="col-lg-3 col-md-6">
-                <div class="product-card h-100">
-                    <div class="product-badge bg-danger">Популярний</div>
-                    <img src="{% static product.image_url %}" alt="{{ product.name }}" class="img-fluid">
-                    <div class="product-info p-3">
-                        <h3>{{ product.name }}</h3>
-                        <div class="product-price mb-2">
-                            <span class="current-price">{{ product.price }}₴</span>
-                            {% if product.old_price %}
-                            <span class="old-price">{{ product.old_price }}₴</span>
-                            {% endif %}
-                        </div>
-                        <div class="product-rating mb-2">
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star-half-alt text-warning"></i>
-                            <span class="ms-1">({{ product.reviews }})</span>
-                        </div>
-                        <button class="add-to-cart btn btn-warning w-100" 
-                                data-id="{{ product.id }}" 
-                                data-name="{{ product.name }}" 
-                                data-price="{{ product.price }}">
-                            <i class="fas fa-cart-plus me-2"></i>Додати в кошик
-                        </button>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
 
 <!-- Переваги -->
 <section class="advantages-section mb-5 py-5 bg-light">
@@ -148,7 +109,7 @@
             <div class="col-md-4">
                 <div class="review-card p-4 h-100">
                     <div class="review-header mb-3">
-                        <img src="{% static 'img/people/f78088988a69f351.jpg' %}" alt="Користувач" class="review-avatar">
+                        <img src="{% static 'img/people/photo_2025-06-06_17-08-18.jpg' %}" alt="Користувач" class="review-avatar">
                         <div class="review-user">
                             <h5>Андріан</h5>
                             <div class="review-rating">
@@ -166,9 +127,9 @@
             <div class="col-md-4">
                 <div class="review-card p-4 h-100">
                     <div class="review-header mb-3">
-                        <img src="{% static 'img/people/330px-Anna_Zatonskih.jpg' %}" alt="Користувач" class="review-avatar">
+                        <img src="{% static 'img/people/photo_2025-06-06_17-12-51.jpg' %}" alt="Користувач" class="review-avatar">
                         <div class="review-user">
-                            <h5>Ганна</h5>
+                            <h5>Олексій</h5>
                             <div class="review-rating">
                                 <i class="fas fa-star text-warning"></i>
                                 <i class="fas fa-star text-warning"></i>
@@ -184,9 +145,9 @@
             <div class="col-md-4">
                 <div class="review-card p-4 h-100">
                     <div class="review-header mb-3">
-                        <img src="{% static 'img/people/2020-06-11-13.36.28-1.jpg' %}" alt="Користувач" class="review-avatar">
+                        <img src="{% static 'img/people/photo_2025-06-06_17-08-32.jpg' %}" alt="Користувач" class="review-avatar">
                         <div class="review-user">
-                            <h5>Максим</h5>
+                            <h5>Олег</h5>
                             <div class="review-rating">
                                 <i class="fas fa-star text-warning"></i>
                                 <i class="fas fa-star text-warning"></i>
@@ -204,51 +165,7 @@
 </section>
 
 <!-- Блог -->
-<section class="blog-section mb-5">
-    <div class="container">
-        <h2 class="text-center mb-5 section-title">Останні статті</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="blog-card h-100">
-                    <img src="{% static 'img/news/01.jpg' %}" alt="Стаття" class="img-fluid rounded-top">
-                    <div class="blog-content p-3">
-                        <div class="blog-meta mb-2">
-                            <span class="text-muted"><i class="far fa-calendar me-1"></i>15 травня 2025</span>
-                        </div>
-                        <h4>Як вибрати ідеальну механічну клавіатуру</h4>
-                        <p class="text-muted">Поради щодо вибору клавіатури за типом перемикачів, розміром та призначенням...</p>
-                        <a href="#" class="btn btn-outline-warning">Читати далі</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="blog-card h-100">
-                    <img src="{% static 'img/news/10-mouses-for-gaming-02.jpg.webp' %}" alt="Стаття" class="img-fluid rounded-top">
-                    <div class="blog-content p-3">
-                        <div class="blog-meta mb-2">
-                            <span class="text-muted"><i class="far fa-calendar me-1"></i>10 травня 2025</span>
-                        </div>
-                        <h4>ТОП-5 геймерських мишок 2025 року</h4>
-                        <p class="text-muted">Огляд найкращих моделей для професійних геймерів та кіберспортсменів...</p>
-                        <a href="#" class="btn btn-outline-warning">Читати далі</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="blog-card h-100">
-                    <img src="{% static 'img/news/news_1622619309184421_0.webp' %}" alt="Стаття" class="img-fluid rounded-top">
-                    <div class="blog-content p-3">
-                        <div class="blog-meta mb-2">
-                            <span class="text-muted"><i class="far fa-calendar me-1"></i>5 травня 2025</span>
-                        </div>
-                        <h4>Бездротові vs Дротові гарнітури</h4>
-                        <p class="text-muted">Плюси та мінуси кожного типу, на що звернути увагу при виборі...</p>
-                        <a href="#" class="btn btn-outline-warning">Читати далі</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 {% endblock %}
+
+

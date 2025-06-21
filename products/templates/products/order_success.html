@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center py-5">
+    <div class="alert alert-success">
+        <h2><i class="fas fa-check-circle me-2"></i>Замовлення успішно оформлено!</h2>
+    </div>
+    
+    <div class="card border-0 shadow-sm my-4">
+        <div class="card-body">
+            <h4 class="card-title">Деталі замовлення</h4>
+            <p><strong>Номер замовлення:</strong> #{{ order.id }}</p>
+            <p><strong>Сума:</strong> {{ order.total_price }}₴</p>
+            <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+            <p><strong>Адреса доставки:</strong> {{ order.nova_poshta_city }}, відділення №{{ order.nova_poshta_department }}</p>
+        </div>
+    </div>
+    
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="{% url 'orders' %}" class="btn btn-warning">
+            <i class="fas fa-clipboard-list me-2"></i>Мої замовлення
+        </a>
+        <a href="{% url 'index' %}" class="btn btn-outline-dark">
+            <i class="fas fa-home me-2"></i>На головну
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -9,21 +9,40 @@
     </div>
     
     {% if orders %}
-    <div class="list-group">
-        {% for order in orders %}
-        <a href="{% url 'order_detail' order.id %}" class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">Замовлення #{{ order.order_number }}</h5>
-                <small class="text-muted">{{ order.created_at|date:"d.m.Y H:i" }}</small>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %}">
-                    {{ order.get_status_display }}
-                </span>
-                <strong class="text-warning">{{ order.total_price }}₴</strong>
-            </div>
-        </a>
-        {% endfor %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Номер</th>
+                    <th>Дата</th>
+                    <th>Сума</th>
+                    <th>Статус</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ order.order_number }}</td>
+                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                    <td>{{ order.total_price }}₴</td>
+                    <td>
+                        <span class="badge 
+                            {% if order.status == 'delivered' %}bg-success
+                            {% elif order.status == 'cancelled' %}bg-danger
+                            {% else %}bg-warning{% endif %}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-dark">
+                            <i class="fas fa-eye"></i> Деталі
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% else %}
     <div class="alert alert-info">
@@ -31,4 +50,4 @@
     </div>
     {% endif %}
 </div>
-{% endblock %}
+{% endblock %} 

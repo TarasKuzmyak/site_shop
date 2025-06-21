@@ -17,13 +17,13 @@
       <div class="col-lg-6">
         <div class="product-gallery">
           <div class="main-product-image-wrapper">
-            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="main-product-image img-fluid">
+            <img src="{% static product.image_path %}" alt="{{ product.name }}" class="main-product-image img-fluid">
           </div>
           
           {% if product.images.all %}
           <div class="thumbnail-images">
             {% for image in product.images.all %}
-            <img src="{{ image.image.url }}" alt="{{ product.name }}" class="thumbnail {% if forloop.first %}active{% endif %}" 
+            <img src="{% static product.image_path %}" alt="{{ product.name }}" class="thumbnail {% if forloop.first %}active{% endif %}" 
                  data-main-src="{{ image.image.url }}">
             {% endfor %}
           </div>
@@ -103,7 +103,7 @@
                     data-id="{{ product.id }}"
                     data-name="{{ product.name }}"
                     data-price="{{ product.price }}"
-                    data-image="{{ product.main_image.url }}">
+                    data-image="{% if product.image_path %}{% static product.image_path %}{% else %}{% static 'img/no-image.png' %}{% endif %}">
               <i class="fas fa-cart-plus me-2"></i>В кошик
             </button>
           </div>
@@ -163,8 +163,6 @@
             {% for review in product.reviews.all %}
             <div class="review-card">
               <div class="review-header">
-                <img src="{% if review.user.profile.avatar %}{{ review.user.profile.avatar.url }}{% else %}{% static 'img/default-avatar.jpg' %}{% endif %}" 
-                     alt="{{ review.user.get_full_name }}" class="review-avatar">
                 <div class="review-user">
                   <h5>{{ review.user.get_full_name }}</h5>
                   <div class="review-rating">
@@ -188,7 +186,7 @@
             {% endfor %}
           {% else %}
             <div class="alert alert-info">
-              Поки що немає відгуків про цей товар. Залиште перший!
+              <i class="fas fa-info-circle me-2"></i>Поки що немає відгуків про цей товар. Залиште перший!
             </div>
           {% endif %}
           
@@ -238,13 +236,13 @@
             <div class="product-badge badge-sale">-{{ product.discount }}%</div>
             {% endif %}
             
-            <button class="wishlist-btn" data-id="{{ product.id }}">
+            <button class="wishlist-btn" data-id="{{ product.id }}" onclick="toggleWishlist(this)">
               <i class="far fa-heart"></i>
             </button>
             
             <a href="{{ product.get_absolute_url }}">
               <div class="product-image-wrapper">
-                <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="product-image">
+                <img src="{% static product.image_path %}" alt="{{ product.name }}" class="product-image">
               </div>
             </a>
             
@@ -259,13 +257,13 @@
                 <span class="old-price">{{ product.old_price }}₴</span>
                 {% endif %}
               </div>
-              
+                
               <div class="product-actions">
                 <button class="btn btn-success btn-add-to-cart"
                         data-id="{{ product.id }}"
                         data-name="{{ product.name }}"
                         data-price="{{ product.price }}"
-                        data-image="{{ product.main_image.url }}">
+                        data-image="{% static product.image_path %}">
                   <i class="fas fa-cart-plus"></i>
                 </button>
                 
@@ -309,5 +307,54 @@ document.querySelector('.increase-qty').addEventListener('click', function() {
   const input = document.querySelector('.quantity-selector input');
   input.value = parseInt(input.value) + 1;
 });
+
+// Функція для додавання/видалення з бажаного
+function toggleWishlist(button) {
+    const productId = button.dataset.id;
+    fetch(`/wishlist/toggle/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'added') {
+            button.innerHTML = '<i class="fas fa-heart text-danger"></i>';
+            showToast('Товар додано до бажаного', 'success');
+        } else if (data.status === 'removed') {
+            button.innerHTML = '<i class="far fa-heart"></i>';
+            showToast('Товар видалено з бажаного', 'info');
+        }
+    })
+    .catch(error => {
+        console.error('Помилка:', error);
+        showToast('Сталася помилка', 'danger');
+    });
+}
+
+// Функція для показу сповіщень
+function showToast(message, type) {
+    const toastContainer = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast show align-items-center text-bg-${type} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+    toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
 </script>
 {% endblock %}

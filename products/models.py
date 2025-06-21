@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings
 from django.utils.text import slugify
+import datetime
+from django.utils import timezone
+import random
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -65,6 +68,8 @@ class Product(models.Model):
     weight = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)  # в грамах
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    image_path = models.CharField(max_length=255, blank=True, null=True, 
+                                 help_text="Шлях до зображення у статичних файлах")
     
     # Відносини
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
@@ -80,7 +85,8 @@ class Product(models.Model):
     
     @property
     def main_image(self):
-        return self.images.filter(is_main=True).first() or self.images.first()
+        """Повертає шлях до головного зображення"""
+        return self.image_path
     
     def get_absolute_url(self):
         return f"/product/{self.slug}/"
@@ -154,29 +160,45 @@ class Order(models.Model):
         ('delivered', 'Доставлено'),
         ('cancelled', 'Скасовано'),
     ]
+    PAYMENT_CHOICES = [
+        ('cash_on_delivery', 'Готівкою при отриманні'),
+    ]
     
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='orders')
     order_number = models.CharField(max_length=20, unique=True, default='temp')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    shipping_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='shipping_orders')
-    billing_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='billing_orders')
-    note = models.TextField(blank=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_CHOICES,
+        default='cash_on_delivery'
+    )
+    nova_poshta_city = models.CharField(max_length=100, blank=True, null=True)
+    nova_poshta_city_ref = models.CharField(max_length=100, blank=True, null=True)
+    nova_poshta_department = models.CharField(max_length=100, blank=True, null=True)
+    nova_poshta_department_name = models.CharField(max_length=255, blank=True, null=True)
+    customer_name = models.CharField(max_length=100)
+    customer_phone = models.CharField(max_length=20)
+    customer_email = models.EmailField()
+    
+    def __str__(self):
+        return f'Order #{self.order_number}'
+    
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            # Generate order number: YYMMDD + random 4 digits
+            date_str = timezone.now().strftime('%y%m%d')
+            random_str = ''.join(random.choices('0123456789', k=4))
+            self.order_number = f'{date_str}{random_str}'
+        super().save(*args, **kwargs)
     
     class Meta:
         ordering = ['-created_at']
     
-    def __str__(self):
-        return f"Order #{self.order_number} by {self.user.username}"
-    
-    def save(self, *args, **kwargs):
-        if self.order_number == 'temp' or not self.order_number:
-            from datetime import datetime
-            now = datetime.now()
-            self.order_number = f"ORD-{now.strftime('%Y%m%d%H%M%S')}-{self.user.id}"
-        super().save(*args, **kwargs)
+    def get_status_display(self):
+        return dict(self.STATUS_CHOICES).get(self.status, self.status)
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
@@ -223,37 +245,33 @@ class User(AbstractUser):
             self.username = self.email.split('@')[0]
         super().save(*args, **kwargs)
         
-        
-
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
     
-    class Meta:
-        verbose_name = 'Товар у кошику'
-        verbose_name_plural = 'Товари у кошику'
-        unique_together = ('user', 'product')  # Користувач не може додати один товар двічі
-    
-    def __str__(self):
-        return f"{self.user.username} - {self.product.name} ({self.quantity})"
-    
     @property
     def total_price(self):
         return self.product.price * self.quantity
     
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='user_avatars/', blank=True, null=True)
-    phone = models.CharField(max_length=20, blank=True)
-    birth_date = models.DateField(null=True, blank=True)
-    GENDER_CHOICES = [
-        ('M', 'Чоловік'),
-        ('F', 'Жінка'),
-        ('O', 'Інше'),
-    ]
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
+    @property
+    def image_url(self):
+        return self.product.main_image.url
+    
+    def to_dict(self):
+        return {
+            'id': self.product.id,
+            'name': self.product.name,
+            'price': float(self.product.price),
+            'quantity': self.quantity,
+            'image': self.product.main_image.url
+        }
+    
+    class Meta:
+        verbose_name = 'Товар у кошику'
+        verbose_name_plural = 'Товари у кошику'
+        unique_together = ('user', 'product')
     
     def __str__(self):
-        return f"Profile of {self.user.username}"
+        return f"{self.user.username} - {self.product.name} ({self.quantity})"

@@ -1,148 +1,322 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h4 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Оформлення замовлення</h4>
+    <h2 class="mb-4">Оформлення замовлення</h2>
+    
+    <form method="post" id="checkout-form">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Доставка Новою Поштою</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Місто</label>
+                            <input type="text" id="city-search" class="form-control" placeholder="Пошук міста..." autocomplete="off">
+                            <select id="city-select" class="form-select bg-dark text-light mt-2" required style="display: none;">
+                                <option value="">Оберіть місто</option>
+                            </select>
+                            <input type="hidden" name="nova_poshta_city" id="city-hidden">
+                            <input type="hidden" name="nova_poshta_city_ref" id="city-ref-hidden">
+                            <div id="city-error" class="text-danger mt-2" style="display: none;"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Відділення</label>
+                            <input type="text" id="department-search" class="form-control" placeholder="Пошук відділення..." autocomplete="off">
+                            <select id="department-select" name="nova_poshta_department" class="form-select bg-dark text-light mt-2" required style="display: none;">
+                                <option value="">Оберіть відділення</option>
+                            </select>
+                            <input type="hidden" name="nova_poshta_department_name" id="department-name-hidden">
+                            <div id="department-error" class="text-danger mt-2" style="display: none;"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h5 class="mb-3">Товари у кошику</h5>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Товар</th>
-                                    <th>Кількість</th>
-                                    <th>Ціна</th>
-                                    <th>Сума</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in cart_items %}
-                                <tr>
-                                    <td>{{ item.product.name }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td>{{ item.product.price }}₴</td>
-                                    <td>{{ item.total_price }}₴</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="3">Всього:</th>
-                                    <th>{{ total_price }}₴</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Оплата</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> 
+                            Оплата здійснюється <strong>лише готівкою при отриманні</strong> на відділенні Нової Пошти.
+                        </div>
+                        <input type="hidden" name="payment_method" value="cash_on_delivery">
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Контактна інформація</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Повне ім'я</label>
+                            <input type="text" name="full_name" class="form-control" value="{{ user.get_full_name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Номер телефону</label>
+                            <input type="tel" name="phone" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ user.email }}" required>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Адреса доставки</h5>
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label">Оберіть адресу доставки</label>
-                            <div class="list-group">
-                                {% for address in addresses %}
-                                <label class="list-group-item">
-                                    <input class="form-check-input me-2" type="radio" name="shipping_address" value="{{ address.id }}" {% if forloop.first %}checked{% endif %}>
-                                    <strong>{{ address.name }}</strong> - {{ address.city }}, {{ address.address }}
-                                </label>
-                                {% endfor %}
-                            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Ваше замовлення</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for item in cart_items %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ item.product.name }}
+                                <span>{{ item.quantity }} × {{ item.product.price }}₴</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="d-flex justify-content-between mt-3">
+                            <span>Доставка:</span>
+                            <span>Безкоштовно</span>
                         </div>
-                        
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="same_billing" checked>
-                            <label class="form-check-label" for="same_billing">Адреса доставки та оплати однакові</label>
+                        <div class="d-flex justify-content-between mt-2 fw-bold">
+                            <span>Всього:</span>
+                            <span>{{ total_price }}₴</span>
                         </div>
-                        
-                        <div id="billing_address" style="display: none;">
-                            <div class="mb-3">
-                                <label class="form-label">Оберіть адресу оплати</label>
-                                <div class="list-group">
-                                    {% for address in addresses %}
-                                    <label class="list-group-item">
-                                        <input class="form-check-input me-2" type="radio" name="billing_address" value="{{ address.id }}">
-                                        <strong>{{ address.name }}</strong> - {{ address.city }}, {{ address.address }}
-                                    </label>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Спосіб оплати</label>
-                            <div class="list-group">
-                                <label class="list-group-item">
-                                    <input class="form-check-input me-2" type="radio" name="payment_method" value="cash" checked>
-                                    Готівкою при отриманні
-                                </label>
-                                <label class="list-group-item">
-                                    <input class="form-check-input me-2" type="radio" name="payment_method" value="card">
-                                    Оплата карткою онлайн
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Примітка до замовлення</label>
-                            <textarea class="form-control" name="note" rows="3"></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-warning w-100">Підтвердити замовлення</button>
-                    </form>
+                        <button type="submit" class="btn btn-warning w-100 mt-3">Підтвердити замовлення</button>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Підсумок замовлення</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Товари ({{ cart_items|length }})</span>
-                        <span>{{ total_price }}₴</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Доставка</span>
-                        <span>Безкоштовно</span>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between fw-bold">
-                        <span>До оплати</span>
-                        <span>{{ total_price }}₴</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"><i class="fas fa-lock me-2"></i>Безпека</h5>
-                </div>
-                <div class="card-body">
-                    <p><i class="fas fa-check-circle text-success me-2"></i>Безпечна оплата</p>
-                    <p><i class="fas fa-check-circle text-success me-2"></i>Захист даних</p>
-                    <p><i class="fas fa-check-circle text-success me-2"></i>Гарантія повернення</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    </form>
 </div>
 
 <script>
-document.getElementById('same_billing').addEventListener('change', function() {
-    document.getElementById('billing_address').style.display = this.checked ? 'none' : 'block';
+document.addEventListener('DOMContentLoaded', function() {
+    const citySearch = document.getElementById('city-search');
+    const citySelect = document.getElementById('city-select');
+    const departmentSearch = document.getElementById('department-search');
+    const departmentSelect = document.getElementById('department-select');
+    const cityHidden = document.getElementById('city-hidden');
+    const cityRefHidden = document.getElementById('city-ref-hidden');
+    const departmentNameHidden = document.getElementById('department-name-hidden');
+    const form = document.getElementById('checkout-form');
+    const cityError = document.getElementById('city-error');
+    const departmentError = document.getElementById('department-error');
+    const API_KEY = '94ed72322e27ce743ada0ff06508a74f';
+    
+    let cities = [];
+    let departments = [];
+    
+    // Завантаження міст з API Нової Пошти
+    async function loadCities() {
+        citySearch.placeholder = "Завантаження міст...";
+        
+        try {
+            const response = await fetch('https://api.novaposhta.ua/v2.0/json/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "apiKey": API_KEY,
+                    "modelName": "Address",
+                    "calledMethod": "getCities",
+                    "methodProperties": {
+                        "FindByString": "",
+                        "Page": "1",
+                        "Limit": "10000",
+                        "Language": "UA"
+                    }
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.data.length > 0) {
+                cities = data.data;
+                citySearch.placeholder = "Пошук міста...";
+            } else {
+                const errorMessage = data.errors?.[0] || 'Не вдалося завантажити міста';
+                cityError.textContent = Array.isArray(errorMessage) ? errorMessage.join(', ') : errorMessage;
+                cityError.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Помилка завантаження міст:', error);
+            cityError.textContent = 'Помилка підключення до сервера';
+            cityError.style.display = 'block';
+        }
+    }
+    
+    // Завантаження відділень для обраного міста
+    async function loadDepartments(cityRef) {
+        departmentSearch.placeholder = "Завантаження відділень...";
+        
+        try {
+            const response = await fetch('https://api.novaposhta.ua/v2.0/json/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "apiKey": API_KEY,
+                    "modelName": "Address",
+                    "calledMethod": "getWarehouses",
+                    "methodProperties": {
+                        "CityRef": cityRef,
+                        "Language": "UA"
+                    }
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.data.length > 0) {
+                departments = data.data;
+                departmentSearch.placeholder = "Пошук відділення...";
+            } else {
+                const errorMessage = data.errors?.[0] || 'Не вдалося завантажити відділення';
+                departmentError.textContent = Array.isArray(errorMessage) ? errorMessage.join(', ') : errorMessage;
+                departmentError.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Помилка завантаження відділень:', error);
+            departmentError.textContent = 'Помилка підключення до сервера';
+            departmentError.style.display = 'block';
+        }
+    }
+    
+    // Обробник пошуку міста
+    citySearch.addEventListener('input', function() {
+        cityError.style.display = 'none';
+        const searchTerm = this.value.toLowerCase();
+        
+        if (searchTerm.length < 2) return;
+        
+        const filteredCities = cities.filter(city => 
+            city.Description.toLowerCase().includes(searchTerm)
+        );
+        
+        // Показуємо випадаючий список
+        citySelect.innerHTML = '<option value="">Оберіть місто</option>';
+        filteredCities.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city.Ref;
+            option.textContent = city.Description;
+            citySelect.appendChild(option);
+        });
+        
+        if (filteredCities.length > 0) {
+            citySelect.style.display = 'block';
+        }
+    });
+    
+    // Обробник вибору міста
+    citySelect.addEventListener('change', function() {
+        if (this.value) {
+            const selectedCity = cities.find(city => city.Ref === this.value);
+            if (selectedCity) {
+                citySearch.value = selectedCity.Description;
+                cityHidden.value = selectedCity.Description;
+                cityRefHidden.value = selectedCity.Ref;
+                citySelect.style.display = 'none';
+                loadDepartments(selectedCity.Ref);
+            }
+        }
+    });
+    
+    // Обробник пошуку відділення
+    departmentSearch.addEventListener('input', function() {
+        departmentError.style.display = 'none';
+        const searchTerm = this.value.toLowerCase();
+        
+        if (searchTerm.length < 2) return;
+        
+        const filteredDepartments = departments.filter(department => 
+            department.Description.toLowerCase().includes(searchTerm)
+        );
+        
+        // Показуємо випадаючий список
+        departmentSelect.innerHTML = '<option value="">Оберіть відділення</option>';
+        filteredDepartments.forEach(department => {
+            const option = document.createElement('option');
+            option.value = department.Ref;
+            option.textContent = department.Description;
+            departmentSelect.appendChild(option);
+        });
+        
+        if (filteredDepartments.length > 0) {
+            departmentSelect.style.display = 'block';
+        }
+    });
+    
+    // Обробник вибору відділення
+    departmentSelect.addEventListener('change', function() {
+        if (this.value) {
+            const selectedDepartment = departments.find(department => department.Ref === this.value);
+            if (selectedDepartment) {
+                departmentSearch.value = selectedDepartment.Description;
+                departmentNameHidden.value = selectedDepartment.Description;
+                departmentSelect.style.display = 'none';
+            }
+        }
+    });
+    
+    // Перевірка форми перед відправкою
+    form.addEventListener('submit', function(e) {
+        let hasError = false;
+        
+        if (!cityRefHidden.value) {
+            cityError.textContent = 'Будь ласка, оберіть місто';
+            cityError.style.display = 'block';
+            hasError = true;
+        }
+        
+        if (!departmentSelect.value) {
+            departmentError.textContent = 'Будь ласка, оберіть відділення';
+            departmentError.style.display = 'block';
+            hasError = true;
+        }
+        
+        if (hasError) {
+            e.preventDefault();
+        } else {
+            // Показуємо повідомлення про успіх
+            e.preventDefault();
+            Swal.fire({
+                title: 'Замовлення оформлено!',
+                text: 'Ваше замовлення успішно оформлене.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Відправляємо форму після підтвердження
+                    form.submit();
+                }
+            });
+        }
+    });
+    
+    // Ініціалізація: завантажити міста
+    loadCities();
 });
 </script>
+
+<style>
+#city-select, #department-select {
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    position: relative;
+}
+</style>
 {% endblock %}

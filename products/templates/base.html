@@ -63,6 +63,18 @@
         </div>
     </header>
 
+    <!-- Вивід повідомлень -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- Бокове меню -->
     <div id="popup-menu" class="hidden d-flex flex-column justify-content-between">
         <ul class="list-unstyled mb-3">
@@ -102,138 +114,150 @@
         </button>
     </div>
 
-    <!-- Модальне вікно входу -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark text-light">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-warning" id="loginModalLabel">
-                        <i class="fas fa-sign-in-alt me-2"></i>Вхід
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="login-form">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Ваш E-mail</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-warning"><i class="fas fa-envelope"></i></span>
-                                <input type="text" class="form-control" name="email" id="email" required>
-                            </div>
+   <!-- Модальне вікно входу -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-warning" id="loginModalLabel">
+                    <i class="fas fa-sign-in-alt me-2"></i>Вхід
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form" action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Ваш E-mail</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-warning"><i class="fas fa-envelope"></i></span>
+                            <input type="text" class="form-control" name="email" id="email" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Пароль</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-warning"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" name="password" id="password" required>
-                            </div>
-                        </div>
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Запам'ятати мене</label>
-                        </div>
-                        <button type="submit" class="btn btn-warning w-100 fw-bold">
-                            <i class="fas fa-sign-in-alt me-2"></i>Увійти
-                        </button>
-                    </form>
-                    <div class="text-center mt-3">
-                        <p>Ще не маєте акаунта?</p>
-                        <button id="openRegisterModal" class="btn btn-outline-warning w-100">
-                            <i class="fas fa-user-plus me-2"></i>Зареєструватися
-                        </button>
                     </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Пароль</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-warning"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" name="password" id="password" required>
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Запам'ятати мене</label>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100 fw-bold">
+                        <i class="fas fa-sign-in-alt me-2"></i>Увійти
+                    </button>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Ще не маєте акаунта?</p>
+                    <button id="openRegisterModal" class="btn btn-outline-warning w-100" 
+                            data-bs-toggle="modal" data-bs-target="#registerModal">
+                        <i class="fas fa-user-plus me-2"></i>Зареєструватися
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Модальне вікно реєстрації -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content bg-dark text-light">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-warning" id="registerModalLabel">
+<!-- Модальне вікно кошика -->
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-light">
+                <h5 class="modal-title" id="cartModalLabel">
+                    <i class="fas fa-shopping-cart me-2"></i>Ваш кошик
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-empty" class="text-center py-5" style="display: none;">
+                    <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">Ваш кошик порожній</h4>
+                    <p class="text-muted">Додайте товари з каталогу</p>
+                </div>
+                <div id="cart-items"></div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <div class="fw-bold">Всього: <span id="total-price">0</span>₴</div>
+                <div>
+                    <button type="button" class="btn btn-outline-dark me-2" data-bs-dismiss="modal">Продовжити покупки</button>
+                    <button id="checkout-btn" type="button" class="btn btn-warning">Оформити замовлення</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальне вікно для неавторизованих користувачів -->
+<div class="modal fade" id="registerOrLoginModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-warning">
+                    <i class="fas fa-user-plus me-2"></i>Увага!
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Для оформлення замовлення потрібно увійти в систему або зареєструватися.</p>
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-sign-in-alt me-2"></i>Увійти
+                    </button>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#registerModal">
                         <i class="fas fa-user-plus me-2"></i>Реєстрація
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="register-form" method="POST">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="firstName" class="form-label">Ім'я</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-warning"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" name="first_name" id="firstName" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="lastName" class="form-label">Прізвище</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-warning"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" name="last_name" id="lastName" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Ваш Email</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-warning"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" name="email" id="email" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Пароль</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-warning"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" name="password" id="password" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">Повторіть пароль</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-warning"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" name="confirm_password"
-                                    id="confirmPassword" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-warning w-100 fw-bold">
-                            <i class="fas fa-user-plus me-2"></i>Зареєструватися
-                        </button>
-                    </form>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Модальне вікно кошика -->
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content bg-dark text-light">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-warning" id="cartModalLabel">
-                        <i class="fas fa-shopping-cart me-2"></i>Ваш кошик
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="cart-empty" class="text-center py-4">
-                        <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
-                        <h5 class="text-muted">Ваш кошик порожній</h5>
-                        <p class="text-muted">Додайте товари, щоб продовжити</p>
+<!-- Модальне вікно реєстрації -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-warning" id="registerModalLabel">
+                    <i class="fas fa-user-plus me-2"></i>Реєстрація
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="register-form" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="reg-first-name" class="form-label">Ім'я</label>
+                        <input type="text" class="form-control" name="first_name" id="reg-first-name" required>
                     </div>
-                    <ul id="cart-items" class="list-group mb-3" style="display: none;">
-                        <!-- Динамічно наповнювані елементи кошика -->
-                    </ul>
-                </div>
-                <div class="modal-footer border-0">
-                    <h5 class="me-auto">Загальна сума: <span id="total-price" class="fw-bold text-warning">0₴</span></h5>
-                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Продовжити покупки</button>
-                    <button type="button" class="btn btn-warning fw-bold" id="checkout-btn">Оформити замовлення</button>
-                </div>
+                    <div class="mb-3">
+                        <label for="reg-last-name" class="form-label">Прізвище</label>
+                        <input type="text" class="form-control" name="last_name" id="reg-last-name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg-email" class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" id="reg-email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg-password" class="form-label">Пароль (мінімум 8 символів)</label>
+                        <input type="password" class="form-control" name="password" id="reg-password" required minlength="8">
+                        <div class="form-text text-warning">Пароль має містити принаймні 8 символів</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reg-confirm-password" class="form-label">Повторіть пароль</label>
+                        <input type="password" class="form-control" name="confirm_password" id="reg-confirm-password" required minlength="8">
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100 fw-bold">
+                        <i class="fas fa-user-plus me-2"></i>Зареєструватися
+                    </button>
+                    <div id="password-error" class="text-danger mt-2" style="display: none;"></div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Головний контент -->
     <main class="container my-4">
@@ -262,18 +286,16 @@
                 <div class="col-md-4 mb-4">
                     <h5 class="text-warning mb-3">Контакти</h5>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-warning"></i> м. Страч, вул. Зелена 12</li>
-                        <li class="mb-2"><i class="fas fa-phone me-2 text-warning"></i> +380 12 345 6789</li>
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2 text-warning"></i> м. Страдч, вул. А.Калитки 47</li>
+                        <li class="mb-2"><i class="fas fa-phone me-2 text-warning"></i> +380 68 844 5180</li>
                         <li><i class="fas fa-envelope me-2 text-warning"></i> <a href="mailto:clicktype@gmail.com" class="text-light">clicktype@gmail.com</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-4">
                     <h5 class="text-warning mb-3">Соціальні мережі</h5>
                     <div class="social-icons">
-                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-instagram fa-lg"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-telegram fa-lg"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-youtube fa-lg"></i></a>
+                        <a href="https://t.me/clicktype1" target="_blank" rel="noopener noreferrer" class="text-light me-3"><i class="fab fa-telegram fa-lg"></i></a>
+<a href="https://www.tiktok.com/@clack_type.ua?_t=ZM-8x25Db7SZiX&_r=1" target="_blank" rel="noopener noreferrer" class="text-light me-3"><i class="fa-brands fa-tiktok"></i></a>
                     </div>
                 </div>
             </div>
@@ -283,8 +305,8 @@
                     <p class="mb-0">&copy; 2025 Click&Type. Усі права захищено.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <a href="#" class="text-light me-3">Політика конфіденційності</a>
-                    <a href="#" class="text-light">Умови використання</a>
+                    <a href="{% url 'privacy_policy' %}" class="text-light me-3">Політика конфіденційності</a>
+                    <a href="{% url 'terms_of_use' %}" class="text-light">Умови використання</a>
                 </div>
             </div>
         </div>
@@ -294,10 +316,175 @@
     <button id="back-to-top" class="btn btn-warning btn-lg rounded-circle">
         <i class="fas fa-arrow-up"></i>
     </button>
+    
+    <!-- Кнопка включення музики -->
+    <button id="music-toggle" class="btn btn-sm btn-warning position-fixed bottom-0 end-0 m-3">
+        <i class="fas fa-music"></i>
+    </button>
+    
+    <!-- Аудіо-елемент для фонової музики -->
+    <audio id="background-music" loop>
+        <source src="{% static 'audio/background-music.mp3' %}" type="audio/mpeg">
+    </audio>
 
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{% static 'js/script.js' %}" defer></script>
+    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+    
+    <script>
+    // Реєстрація користувача з перевіркою пароля
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('reg-password').value;
+        const confirmPassword = document.getElementById('reg-confirm-password').value;
+        const errorElement = document.getElementById('password-error');
+        
+        // Скидання помилки
+        errorElement.style.display = 'none';
+        errorElement.textContent = '';
+        
+        // Перевірка довжини пароля
+        if (password.length < 8) {
+            errorElement.textContent = 'Пароль має містити принаймні 8 символів';
+            errorElement.style.display = 'block';
+            return;
+        }
+        
+        // Перевірка співпадіння паролів
+        if (password !== confirmPassword) {
+            errorElement.textContent = 'Паролі не співпадають';
+            errorElement.style.display = 'block';
+            return;
+        }
+        
+        // Відправка форми
+        const formData = new FormData(this);
+        
+        fetch("{% url 'registration' %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Закриття модального вікна
+                const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                registerModal.hide();
+                
+                // Перенаправлення на сторінку профілю
+                window.location.href = data.redirect_url;
+            } else {
+                // Показати помилку
+                errorElement.textContent = data.error;
+                errorElement.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Помилка:', error);
+            errorElement.textContent = 'Сталася помилка під час реєстрації';
+            errorElement.style.display = 'block';
+        });
+    });
+
+    // Обробка оформлення замовлення
+    document.getElementById('checkout-btn').addEventListener('click', function() {
+        {% if user.is_authenticated %}
+            fetch("{% url 'create_order' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Очищення кошика
+                    document.querySelector('.cart-count').textContent = '0';
+                    document.getElementById('cart-items').innerHTML = '';
+                    document.getElementById('total-price').textContent = '0';
+                    document.getElementById('cart-empty').style.display = 'block';
+                    
+                    // Закриття модального вікна
+                    const cartModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
+                    cartModal.hide();
+                    
+                    // Перенаправлення на сторінку замовлень
+                    window.location.href = data.redirect_url;
+                } else {
+                    showToast('Помилка: ' + data.error, 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Помилка:', error);
+                showToast('Сталася помилка при оформленні замовлення', 'danger');
+            });
+        {% else %}
+            // Для неавторизованих користувачів
+            const cartModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
+            cartModal.hide();
+            
+            const registerModal = new bootstrap.Modal(document.getElementById('registerOrLoginModal'));
+            registerModal.show();
+        {% endif %}
+    });
+    
+    // Функціонал фонової музики
+    document.addEventListener('DOMContentLoaded', function() {
+        const music = document.getElementById('background-music');
+        const musicToggle = document.getElementById('music-toggle');
+        let isPlaying = false;
+        
+        // Перевірка збереженого стану в localStorage
+        const savedState = localStorage.getItem('musicPlaying');
+        if (savedState === 'true') {
+            isPlaying = true;
+            music.play().catch(e => console.log("Автовідтворення заблоковано"));
+            musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+        
+        musicToggle.addEventListener('click', function() {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                music.play();
+                musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                music.pause();
+                musicToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+            // Збереження стану в localStorage
+            localStorage.setItem('musicPlaying', isPlaying);
+        });
+    });
+
+    // Функція для показу сповіщень
+    function showToast(message, type) {
+        const toastContainer = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast show align-items-center text-bg-${type} border-0`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        toastContainer.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    </script>
 </body>
 </html>
